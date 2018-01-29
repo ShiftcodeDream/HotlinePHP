@@ -1,5 +1,5 @@
 CREATE TABLE Utilisateur (
-  usr_id INT PRIMARY KEY,
+  usr_id INT PRIMARY KEY AUTO_INCREMENT,
   usr_nom VARCHAR(50),
   usr_prenom VARCHAR(50),
   usr_login CHAR(10),
@@ -8,7 +8,7 @@ CREATE TABLE Utilisateur (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE Ticket (
-  tkt_id INT PRIMARY KEY,
+  tkt_id INT PRIMARY KEY AUTO_INCREMENT,
   tkt_titre VARCHAR(60) DEFAULT ' ',
   tkt_description VARCHAR(500) NOT NULL,
   tkt_solution VARCHAR(500) DEFAULT NULL,
@@ -22,3 +22,7 @@ CREATE TABLE Ticket (
   tkt_date_pec DATETIME DEFAULT NULL,
   tkt_date_solution DATETIME DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO Utilisateur
+(usr_nom, usr_prenom, usr_login, usr_passwd, usr_role)
+VALUES('La Malice', 'Denis', 'denis', 'ni deux', 'tech');

@@ -1,0 +1,66 @@
+html, body{
+  margin:0;
+  padding:0;
+}
+.erreur{
+  width:100%;
+  Background-color:lightPink;
+  border-bottom:2px solid red;
+  font-size:20px;
+}
+.loginform{
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+
+  border:2px solid DarkBlue;
+  border-radius: 10px;
+  padding:20px;
+}
+.loginform tr td, .loginform input{
+  padding: 10px;
+  font-size:24px;
+}
+.loginform input[type=submit]{
+  width:100%;
+}
+/* Menu du site */
+nav{
+  width:300px;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#deefff+0,98bede+100;Blue+3D+%2310 */
+  background: #deefff; /* Old browsers */
+  background: -moz-linear-gradient(top,  #deefff 0%, #98bede 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #deefff 0%,#98bede 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #deefff 0%,#98bede 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#deefff', endColorstr='#98bede',GradientType=0 ); /* IE6-9 */  
+  padding-bottom: 20px;
+  border-bottom-right-radius: 20px;
+  float:left;
+  margin-right:10px;
+}
+nav h2{
+  padding:0;
+  margin:0;
+  font-size:28px;
+  width:100%;
+  border-bottom: 2px dashed DarkBlue;
+  display:block;
+  color: DarkBlue;
+  text-align:center;
+}
+nav ul{
+  list-style: none;
+  margin:0;
+  padding:5px;
+}
+nav ul li a{
+  text-decoration:none;
+  font-size: 22px;
+  font-weight:bold;
+  color:#552cdd;
+  padding:7px;
+}
+nav ul li a:hover{
+  color:DarkGreen;
+}
+
