@@ -8,4 +8,11 @@ function getValue($nom, $defaut=null){
     return $v;
   return $defaut;
 }
+
+function affichageTemporaire($description){
+  include "view/header.php";
+  echo "<div class='erreur'>TODO : $description</div>";
+  include "view/footer.php";
+}
+
 ?>

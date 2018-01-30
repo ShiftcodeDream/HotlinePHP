@@ -43,7 +43,7 @@ nav h2{
   margin:0;
   font-size:28px;
   width:100%;
-  border-bottom: 2px dashed DarkBlue;
+  border-bottom: 1px solid DarkBlue;
   display:block;
   color: DarkBlue;
   text-align:center;
@@ -63,4 +63,6 @@ nav ul li a{
 nav ul li a:hover{
   color:DarkGreen;
 }
-
+.fielderror{
+  border: 2px solid red;
+}
