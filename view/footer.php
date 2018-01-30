@@ -1,5 +1,5 @@
 <?php
-if(count($champsErreur)){
+if(isset($champsErreur) && count($champsErreur)>0){
 ?>
 <script>
   var liste = ["<?= implode('", "', $champsErreur)?>"];

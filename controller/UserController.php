@@ -1,7 +1,6 @@
 <?php
-include "utils/misc.php";
 
-$action = $_GET['a'];
+$action = getValue('a');
 
 switch($action){
   case 'new' :

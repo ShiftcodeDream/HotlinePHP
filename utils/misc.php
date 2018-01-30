@@ -1,11 +1,15 @@
 <?php
 function getValue($nom, $defaut=null){
-  $v = $_GET[$nom];
-  if(isset($v))
-    return $v;
-  $v = $_POST[$nom];
-  if(isset($v))
-    return $v;
+  if(isset($_GET[$nom]))
+    return $_GET[$nom];
+  if(isset($_POST[$nom]))
+    return $_POST[$nom];
+  return $defaut;
+}
+
+function getSessionValue($nom, $defaut=null){
+  if(isset($_SESSION[$nom]))
+    return $_SESSION[$nom];
   return $defaut;
 }
 

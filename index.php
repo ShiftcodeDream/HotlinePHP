@@ -1,9 +1,10 @@
 <?php
+include "utils/misc.php";
 # Démarrage de la session, récupération des paramètres de session
 session_start();
-$user_id =   $_SESSION['user_id'];
-$user_name = $_SESSION['user_name'];
-$user_role = $_SESSION['user_role'];
+$user_id =   getSessionValue('user_id');
+$user_name = getSessionValue('user_name');
+$user_role = getSessionValue('user_role');
 
 $erreurs = array(); // Messages d'erreur à afficher 
 $champsErreur = array(); // Champ en erreur à mettre en évidence
@@ -28,4 +29,5 @@ if(!isset($user_id)){
       break;
   }
 }
+
 ?>

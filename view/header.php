@@ -24,7 +24,7 @@ header('Content-Type: text/html; charset=utf8');
 <?php } ?>
 
 <?php
-  if(count($erreurs)){
+  if(isset($erreurs) && count($erreurs)>0){
     echo '<div class="erreur">';
     foreach($erreurs as $err){
       echo "<p>$err</p>\n";

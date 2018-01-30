@@ -1,8 +1,7 @@
 <?php
-include "utils/misc.php";
 include "model/UserAuthentificationModel.php";
 
-$action = $_GET['a'];
+$action = getValue('a');
 
 switch($action){
   case 'logon' :
