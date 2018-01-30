@@ -15,7 +15,7 @@ if(!isset($user_id)){
   exit();
 }else{
   # Si l'utilisateur est authentifié, on le dirige vers le controleur qui traitera sa demande
-  $controller = $_GET['c'];
+  $controller = getValue('c');
   switch($controller){
     case 'user' :
       include "controller/UserController.php";
