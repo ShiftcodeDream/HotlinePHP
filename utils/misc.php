@@ -19,4 +19,26 @@ function affichageTemporaire($description){
   include "view/footer.php";
 }
 
+function getLibelleRole(){
+  switch(getSessionValue('user_role')){
+    case 'tech' :
+      return 'technicien';
+    case 'user' :
+      return 'utilisateur';
+    default :
+      return '';
+  }
+}
+
+/**
+ * Utilisé dans les vues. Si le tableau existe et que
+ * la valeur $tableau[$index], renvoie cette valeur, sinon
+ * renvoie une chaine vide
+ **/
+function v($tableau, $index){
+  if(!is_null($tableau) && isset($tableau[$index]))
+    return $tableau[$index];
+  else
+    return '';
+}
 ?>

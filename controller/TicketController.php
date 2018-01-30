@@ -1,4 +1,6 @@
 <?php
+include "view/TicketView.php";
+include "model/TicketModel.php";
 
 $action = getValue('a');
 
@@ -8,6 +10,9 @@ switch($action){
     break;
   case 'inscrit' :
     enregistrerTicket();
+    break;
+  case 'mod' :
+    modifierTicket();
     break;
   case 'visu' :
     formShowTicket();
@@ -23,15 +28,19 @@ switch($action){
 }
 
 function formNewTicket(){
-  include "view/TicketView.php";
+  ticketVueAfficheForm();
 }
 
 function formShowTicket(){
-  
+  ticketVueAfficheForm(getTicket(getValue('id')));
 }
 
 function enregistrerTicket(){
   affichageTemporaire("Enregistrer le nouveau ticket");
+}
+
+function modifierTicket(){
+  
 }
 
 function listeTicketsATraiter(){
