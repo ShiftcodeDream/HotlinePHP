@@ -31,8 +31,15 @@ function getLibelleRole(){
 }
 
 /**
+ * @return booléen vrai si la personne connectée est un technicien
+ **/
+function estTechnicien(){
+  return (getSessionValue('user_role') == 'tech');
+}
+
+/**
  * Utilisé dans les vues. Si le tableau existe et que
- * la valeur $tableau[$index], renvoie cette valeur, sinon
+ * la valeur $tableau[$index] existe, renvoie cette valeur, sinon
  * renvoie une chaine vide
  **/
 function v($tableau, $index){
@@ -41,4 +48,37 @@ function v($tableau, $index){
   else
     return '';
 }
+
+/**
+ * Utilisé dans les vues. Si le tableau existe et que
+ * la valeur $tableau[$index] vaut $valeur, renvoie
+ * le mot selected, sinon vide.
+ **/
+function s($tableau, $index, $valeur){
+  if(v($tableau, $index) == $valeur)
+    return 'selected';
+  else
+    return '';
+}
+
+/**
+ * Renvoie la date et l'heure formatée à la française
+ **/
+function formateDateHeure($str_date){
+  $jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  $mois = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  $d = new DateTime($str_date);
+  $j = $jours[(int)$d->format('w')];
+  $m = $mois[(int)$d->format('n')];
+  return $j . $d->format(' j ') . $m . $d->format(' Y à G:i:s');
+}
+
+
+
+
+
+
+
+
+
 ?>

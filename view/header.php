@@ -13,7 +13,7 @@ header('Content-Type: text/html; charset=utf8');
     <ul>
       <li><a href="index.php?c=ticket&a=new">Nouveau Ticket</a></li>
       <li><a href="index.php?c=ticket&a=vuser">Voir mes Tickets</a></li>
-  <?php if(getSessionValue('user_role') == 'tech'){ ?>
+  <?php if(estTechnicien()){ ?>
       <li><a href="index.php?c=ticket&a=vatrait">Tickets à traiter</a></li>
       <li><a href="index.php?c=ticket&a=vtech">Tickets dont j'ai la charge</a></li>
       <li><a href="index.php?c=user&a=new">Nouvel utilisateur</a></li>
@@ -32,5 +32,5 @@ header('Content-Type: text/html; charset=utf8');
     }
     echo '</div>';
   }
-?>
 
+?>

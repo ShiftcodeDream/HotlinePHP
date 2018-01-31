@@ -1,6 +1,7 @@
 html, body{
   margin:0;
   padding:0;
+  font-size:18px;
 }
 .erreur{
   width:100%;
@@ -72,4 +73,18 @@ nav ul li a:hover{
 }
 .fielderror{
   border: 2px solid red;
+}
+label{
+  font-size:18px;
+  font-weight:bold;
+}
+.mandatory:after{
+  content:' *';
+  color:red;
+}
+td{
+  vertical-align:top;
+}
+textarea{
+  font-family:Times New Roman;
 }

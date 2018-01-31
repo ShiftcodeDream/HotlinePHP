@@ -9,8 +9,6 @@ $user_role = getSessionValue('user_role');
 $erreurs = array(); // Messages d'erreur à afficher 
 $champsErreur = array(); // Champ en erreur à mettre en évidence
 
-  $c = $_GET['toto'];
-
 # L'utilisateur est-il authentifié?
 if(!isset($user_id)){
   include "controller/UserAuthentificationController.php";
