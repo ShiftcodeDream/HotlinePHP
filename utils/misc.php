@@ -14,7 +14,6 @@ function getSessionValue($nom, $defaut=null){
 }
 
 function affichageTemporaire($description){
-  include "view/header.php";
   echo "<div class='erreur'>TODO : $description</div>";
   include "view/footer.php";
 }

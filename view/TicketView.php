@@ -10,9 +10,7 @@ function ticketVueAfficheForm($o=null){
     , is_null($o) ? getSessionValue('user_name', '') : $o['tkt_nom_demandeur']
     , '</h1>';
   
-  $o = array();
-  $o['tkt_technicien'] = 1;
-  $o['tkt_technicien_nom'] = 'simple test';
+//  $o = array();
 ?>
   <table>
 <?php if(v($o, 'tkt_etat') !== ''){
