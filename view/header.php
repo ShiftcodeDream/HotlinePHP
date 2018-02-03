@@ -26,12 +26,16 @@ header('Content-Type: text/html; charset=utf8');
 <?php } ?>
 
 <?php
-  if(isset($erreurs) && count($erreurs)>0){
-    echo '<div class="erreur">';
-    foreach($erreurs as $err){
-      echo "<p>$err</p>\n";
-    }
-    echo '</div>';
-  }
+  if(!empty($erreurs))
+    afficheMsg($erreurs, 'erreur');
+  if(!empty($messages))
+    afficheMsg($messages, 'info');
 
+  function afficheMsg($msgs, $classe){
+    echo "<div class='$classe'><ul>";
+    foreach($msgs as $mes){
+      echo "<li>$mes</li>\n";
+    }
+    echo '</ul></div>';        
+  }
 ?>

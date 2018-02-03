@@ -3,13 +3,18 @@ if(isset($champsErreur) && count($champsErreur)>0){
 ?>
 <script>
   var liste = ["<?= implode('", "', $champsErreur)?>"];
-  foreach(l in liste){
-    evidence(l);
+  document.flagPremier = true;
+  for(i=0;i<liste.length;i++){
+    evidence(liste[i]);
   }
   function evidence(nom){
-    e = document.getElementById("nom");
+    e = document.getElementById(nom);
     if(e){
-      e.addClass("fielderror");
+      e.className += " fielderror";
+      if(document.flagPremier){
+        e.focus();
+        document.flagPremier = false;
+      }
     }
   }
 </script>

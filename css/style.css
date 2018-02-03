@@ -3,11 +3,27 @@ body{
   padding:0;
   font-size:18px;
 }
+/* Affichage des messages d'erreur */
 .erreur{
   width:100%;
   Background-color:lightPink;
   border-bottom:2px solid red;
   font-size:28px;
+}
+/* Affichage des messages d'information */
+.info{
+  width:100%;
+  Background-color:lightGreen;
+  border-bottom:2px solid DarkGreen;
+  font-size:28px;  
+}
+.info, .erreur ul{
+  margin:0;
+  list-style: none;
+}
+/* Pour mettre en évidence un champ en erreur */
+.fielderror{
+  border: 2px solid orange;
 }
 .loginform{
   position: absolute;
@@ -71,14 +87,11 @@ nav ul li a{
 nav ul li a:hover{
   color:DarkGreen;
 }
-.fielderror{
-  border: 2px solid red;
-}
 label{
   font-size:18px;
   font-weight:bold;
 }
-.mandatory:after{
+.obligatoire:after{
   content:' *';
   color:red;
 }

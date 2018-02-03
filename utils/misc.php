@@ -14,8 +14,7 @@ function getSessionValue($nom, $defaut=null){
 }
 
 function affichageTemporaire($description){
-  echo "<div class='erreur'>TODO : $description</div>";
-  include "view/footer.php";
+  echo("TODO : $description");
 }
 
 function getLibelleRole(){
@@ -86,12 +85,19 @@ function formateDateHeure($str_date){
   return $j . $d->format(' j ') . $m . $d->format(' Y à G:i:s');
 }
 
-
-
-
-
-
-
-
-
+/**
+ * Affiche la variable ou le tableau de manière lisible pour un humain
+ * @param $continue boolean indique s'il faut continuer le script.
+ * Vaut false par défaut.
+ **/
+function myDump($variable, $continue=false){
+  if(!headers_sent()){
+    header('Content-Type: text/html; charset=utf8');
+    echo '<!DOCTYPE html><html lang="fr"><body>';
+  }
+  echo "<xmp>";
+  print_r($variable);
+  echo "</xmp>";
+  $continue || die("--FIN--");
+}
 ?>

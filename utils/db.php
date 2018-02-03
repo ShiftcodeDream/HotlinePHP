@@ -19,6 +19,7 @@ try {
  * @see fetchAll
  **/
 function dbSelect($sql, $params){
+  global $db;
   $requete = $db->prepare($sql);
   
   $requete->execute($params);
@@ -26,6 +27,6 @@ function dbSelect($sql, $params){
   $reponse = $requete->fetchAll();
   $requete->closeCursor();
   
-  return (count($reponse)>0) ? $reponse : null;
+  return empty($reponse) ? null : $reponse;
 }
 ?>

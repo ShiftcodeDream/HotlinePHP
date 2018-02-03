@@ -8,6 +8,7 @@ $user_role = getSessionValue('user_role');
 
 $erreurs = array(); // Messages d'erreur à afficher 
 $champsErreur = array(); // Champ en erreur à mettre en évidence
+$messages = array(); // Messages d'information (exemple : "utilisateur créé")
 
 # L'utilisateur est-il authentifié?
 if(!isset($user_id)){
