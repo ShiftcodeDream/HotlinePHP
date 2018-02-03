@@ -1,19 +1,39 @@
 <?php
-include "view/header.php";
 
 
 function ticketVueAfficheForm($o=null){
-  $action = 'index.php?c=ticket&a=' . is_null($o) ? 'new' : 'mod';
-  echo "<form name='ticket' action='$action' method='post'>";
+  include "view/header.php";
+  if(is_null($o)){
+    $action = 'index.php?c=ticket&a=new';
+    $action_texte = 'Soumettre';
+  }else{
+    $action = 'index.php?c=ticket&a=mod';
+    $action_texte = 'Enregistrer';
+  }
+  
+  echo "<form name='ticket' action='$action' method='post' onSubmit='return testeValidite()'>";
   echo '<h1>', is_null($o) ? "Création d'un" : 'Détails du'
     , " ticket au nom de "
     , is_null($o) ? getSessionValue('user_name', '') : $o['tkt_nom_demandeur']
     , '</h1>';
   
-//  $o = array();
+  // TODO a supprimer (tests only)
+  $o = array();
+  $o['tkt_id']=15;
+?>
+  <input type="submit" value="<?=$action_texte?>">
+<?php
+  if(isset($o) && estTechnicien()){
+    echo '<button type="button"
+    onClick="document.location=\'index.php?c=ticket&a=pec&id='
+    , $o['tkt_id']  
+    , '\'">Prendre en charge</button>';
+  }
 ?>
   <table>
-<?php if(v($o, 'tkt_etat') !== ''){
+    
+<?php
+  if(v($o, 'tkt_etat') !== ''){
     echo '<tr><td><label>Etat du ticket</label></td><td>';
     switch($o['tkt_etat']){
       case '0' : 
@@ -67,7 +87,7 @@ function ticketVueAfficheForm($o=null){
     <tr>
       <td><label for="impact">Impact global</label></td>
       <td>
-        <select name="impact" id="impact">
+        <select name="impact" id="impact" <?=d(estTechnicien())?>>
           <option value="1" <?=s($o, 'tkt_impact', 1)?>>aucun</option>
           <option value="2" <?=s($o, 'tkt_impact', 2)?>>faible</option>
           <option value="3" <?=s($o, 'tkt_impact', 3)?>>moyen</option>
@@ -101,24 +121,28 @@ function ticketVueAfficheForm($o=null){
     <tr>
       <td><label for="temps">Temps de résolution</label></td>
       <td>
-<?php
-  if((v($o, 'tkt_technicien') == getSessionValue('user_id')) && (estTechnicien()) ){
-    echo '<input type="text" id="temps" name="temps" value="'
-      , v($o,'tkt_temps_passe')
-      , '" size="5"> (en minutes)</td>';
-  }else{
-    if(v($o,'tkt_temps_passe') !== '')
-      echo v($o,'tkt_temps_passe'), ' minutes';
-  }
-?>
+        <input type="text" id="temps" name="temps" size="5" value="<?=v($o,'tkt_temps_passe')?>"
+          <?=d((v($o, 'tkt_technicien') == getSessionValue('user_id')) && (estTechnicien()))?>> (en minutes)
+      </td>
     </tr>
     
-
-    <tr><td colspan="2"><h1 style="color:red">TODO : Coder la solution apportée</h1></td></tr>
+<?php // Si le ticket n'est pas encore créé, il ne faut pas afficher ce champ
+  if(isset($o)){
+?>
+    <tr>
+      <td><label for="solution">Solution proposée</label></td>
+      <td><textarea name="solution" id="solution" cols="80" rows="10" <?=d(estTechnicien())?>><?=v($o, 'solution')?></textarea>
+      </td>
+    </tr>
+<?php    
+  }
+?>
     
-  </table>
-<?php  
-}
+</table>
+</form>
 
+<?php  
 include "view/footer.php";
+} // Fin de la fonction ticketVueAfficheForm()
+
 ?>

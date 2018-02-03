@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: text/html; charset=utf8');
 ?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <title>Hotline en PHP</title>

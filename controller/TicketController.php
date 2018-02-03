@@ -5,24 +5,40 @@ include "model/TicketModel.php";
 $action = getValue('a');
 
 switch($action){
-  case 'new' :
+  // Afficher le formulaire de saisie
+  case 'new' : 
     formNewTicket();
     break;
-  case 'inscrit' :
+  // TODO Enregistrer un ticket
+  case 'inscrit' :  
     enregistrerTicket();
     break;
-  case 'mod' :
+  // TODO Prendre en charge un ticket
+  case 'pec' : 
+    if(estTechnicien()){
+      priseEnChargeTicket();
+    }
+  // TODO Modifier un ticket
+  case 'mod' :  
     modifierTicket();
     break;
-  case 'visu' :
+  // TODO Afficher un ticket
+  case 'visu' : 
     formShowTicket();
-  case 'vatrait' :
-    listeTicketsATraiter();
+  // TODO Lister les tickets à traiter (technicien seulement)
+  case 'vatrait' :  
+    if(estTechnicien()){
+      listeTicketsATraiter();
+    }else{
+      listeTicketsUtilisateur();
+    }
     break;
-  case 'vtech' :
+  // TODO Lister les tickets affectés à un technicien
+  case 'vtech' : 
     listeTicketsDuTechnicien();
-    break;    
-  case 'vuser' :
+    break;
+  // TODO Lister les tickets d'un utilisateur
+  case 'vuser' : 
   default :
     listeTicketsUtilisateur();
 }
@@ -55,4 +71,7 @@ function listeTicketsUtilisateur(){
   affichageTemporaire("Lister les tickets de l'utilisateur");
 }
 
+function priseEnChargeTicket(){
+  
+}
 ?>

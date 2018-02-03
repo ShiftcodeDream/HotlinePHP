@@ -37,7 +37,8 @@ function estTechnicien(){
 }
 
 /**
- * Utilisé dans les vues. Si le tableau existe et que
+ * Utilisé dans les vues pour remplir la valeur d'un champ
+ * . Si le tableau existe et que
  * la valeur $tableau[$index] existe, renvoie cette valeur, sinon
  * renvoie une chaine vide
  **/
@@ -49,13 +50,26 @@ function v($tableau, $index){
 }
 
 /**
- * Utilisé dans les vues. Si le tableau existe et que
+ * Utilisé dans les vues pour sélectionner le bon élément d'un champ select
+ * . Si le tableau existe et que
  * la valeur $tableau[$index] vaut $valeur, renvoie
  * le mot selected, sinon vide.
  **/
 function s($tableau, $index, $valeur){
   if(v($tableau, $index) == $valeur)
     return 'selected';
+  else
+    return '';
+}
+
+/**
+ * Utilisé dans les vues pour passer un champ en lecture seule
+ * si la condition n'est pas remplie
+ * @return Si la condition est fausse, renvoie 'disabled'
+ **/
+function d($condition){
+  if(!$condition)
+    return 'disabled';
   else
     return '';
 }
