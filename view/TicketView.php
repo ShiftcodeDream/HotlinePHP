@@ -153,16 +153,23 @@ include "view/footer.php";
 /*
  * Affiche une vue de tickets
  * @param liste tickets à afficher
- * @param champs array table associative contenant en clé le nom du champ à affiche
- * et en valeur le libellé de la colonne.
+ * @param action string uri à appeler lorsque la personne clique sur le lien. Est rajouté à la fin de l'uri l'identifiant du ticket
+ * @param champs array table associative contenant en clé le nom du champ à afficher et en valeur le libellé de la colonne.
+ * @param champIndex string le nom du champ qui contient l'identifiant unique du ticket.
  * @param titre string titre de la vue à afficher
  */
 
-function afficheVueGeneriqueTickets($liste, $champs, $titre="Liste des tickets"){
+function afficheVueGeneriqueTickets($liste, $action, $champs, $champIndex="tkt_id", $titre="Liste des tickets"){
   global $erreurs, $messages;
-  $liste = getGenericListeTickets($nom, $params);
   
   include "view/header.php";
+  echo "<h1>$titre</h1>\n";
+
+  if(empty($liste)){
+    echo "<p>Liste vide pour le moment.</p>\n";
+    return;
+  }
+
   // entetes de colonne
   echo "<table><tr>\n";
   foreach($champs as $nom => $libelle){
@@ -172,7 +179,8 @@ function afficheVueGeneriqueTickets($liste, $champs, $titre="Liste des tickets")
   
   // Lignes de détail
   foreach($liste as $donnee){
-    echo "<tr>\n";
+      $uri = $action . $donnee[$champIndex];
+    echo "<tr onclick='document.location=\"$uri\"'>\n";
     foreach($champs as $nom => $libelle){
       echo "<td>$donnee[$nom]</td>";
     }

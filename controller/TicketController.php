@@ -99,19 +99,22 @@ function enregistrerTicket(){
 }
 
 function modifierTicket(){
-  // Vérifier que le ticket existe en base de données
+  // TODO Vérifier que le ticket existe en base de données
   
-  // Si non technicien, vérifier que l'utilisateur actuel est le propriétaire du ticket
+  // TODO Si non technicien, vérifier que l'utilisateur actuel est le propriétaire du ticket
   
+  $ticket = getTicket(getValue('id'));
+  ticketVueAfficheForm($ticket);
 }
 
 function listeTicketsATraiter(){
-  include_once "view/header.php";
   $liste = getGenericListeTickets('vatrait', array());
-  afficheVueGeneriqueTickets($liste, array(
-    // TODO 
+
+  afficheVueGeneriqueTickets($liste, 'index.php?c=ticket&a=mod&id=', array(
+    'tkt_titre' => "Titre",
+    'tkt_demandeur_nom' => "Demandeur",
+    'tkt_date_demande' => "Date de création"
   ));
-  include_once "view/header.php";
 }
 
 function listeTicketsDuTechnicien(){

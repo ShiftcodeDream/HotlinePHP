@@ -20,6 +20,7 @@ try {
  **/
 function dbSelect($sql, $params){
   global $db;
+
   $requete = $db->prepare($sql);
   
   $requete->execute($params);
