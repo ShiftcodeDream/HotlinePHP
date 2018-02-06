@@ -150,4 +150,38 @@ function ticketVueAfficheForm($o=null){
 include "view/footer.php";
 } // Fin de la fonction ticketVueAfficheForm()
 
+/*
+ * Affiche une vue de tickets
+ * @param liste tickets à afficher
+ * @param champs array table associative contenant en clé le nom du champ à affiche
+ * et en valeur le libellé de la colonne.
+ * @param titre string titre de la vue à afficher
+ */
+
+function afficheVueGeneriqueTickets($liste, $champs, $titre="Liste des tickets"){
+  global $erreurs, $messages;
+  $liste = getGenericListeTickets($nom, $params);
+  
+  include "view/header.php";
+  // entetes de colonne
+  echo "<table><tr>\n";
+  foreach($champs as $nom => $libelle){
+    echo "<th>$libelle</th>";
+  }
+  echo "</tr>\n";
+  
+  // Lignes de détail
+  foreach($liste as $donnee){
+    echo "<tr>\n";
+    foreach($champs as $nom => $libelle){
+      echo "<td>$donnee[$nom]</td>";
+    }
+    echo "</tr>\n";
+  }
+  echo "</table>\n";
+  
+  include "view/footer.php";
+}
+
+
 ?>

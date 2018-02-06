@@ -107,7 +107,10 @@ function modifierTicket(){
 
 function listeTicketsATraiter(){
   include_once "view/header.php";
-  affichageTemporaire("Lister les tickets à traiter");
+  $liste = getGenericListeTickets('vatrait', array());
+  afficheVueGeneriqueTickets($liste, array(
+    // TODO 
+  ));
   include_once "view/header.php";
 }
 
@@ -134,4 +137,12 @@ function vueParDefaut(){
   else
     listeTicketsUtilisateur();
 }
+
+
+
+
+
+
+
+
 ?>

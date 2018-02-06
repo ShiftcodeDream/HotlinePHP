@@ -9,7 +9,6 @@ $sql['base'] = "SELECT t.*,
   LEFT JOIN Utilisateur d ON d.usr_id = t.tkt_demandeur
   LEFT JOIN Utilisateur te ON te.usr_id = t.tkt_technicien ";
 
-$sql['vue'] = $sql['base'].'WHERE tkt_id = :tkt_id';
 $sql['modif'] = 'UPDATE Ticket SET 
   tkt_titre = :tkt_titre,
   tkt_description = :tkt_description,
@@ -63,3 +62,16 @@ function creeTicket($ticket){
   }
 }
 
+function getGenericListeTickets($nom, $params){
+  global $erreurs;
+  
+  if(!in_array($nom, $sql))
+    return array();
+  
+  try{
+    return dbSelect($sql[$nom], $params);
+  }catch (PDOException $err){
+    $erreurs[] = "Erreur SQL sur la requète $nom : " . $err->getMessage();
+    return array();
+  }
+}
