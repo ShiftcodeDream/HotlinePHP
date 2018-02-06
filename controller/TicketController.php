@@ -108,13 +108,9 @@ function modifierTicket(){
 }
 
 function listeTicketsATraiter(){
-  $liste = getGenericListeTickets('vatrait', array());
+  $liste = getGenericListeTickets('vatrait', null);
 
-  afficheVueGeneriqueTickets($liste, 'index.php?c=ticket&a=mod&id=', array(
-    'tkt_titre' => "Titre",
-    'tkt_demandeur_nom' => "Demandeur",
-    'tkt_date_demande' => "Date de création"
-  ));
+  afficheListeTicketsATraiter($liste);
 }
 
 function listeTicketsDuTechnicien(){

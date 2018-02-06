@@ -85,6 +85,20 @@ function formateDateHeure($str_date){
   return $j . $d->format(' j ') . $m . $d->format(' Y à G:i:s');
 }
 
+function formateDate($str_date){
+  $jours = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+  $mois = ['', 'janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  $d = new DateTime($str_date);
+  $j = $jours[(int)$d->format('w')];
+  $m = $mois[(int)$d->format('n')];
+  return $j . $d->format(' j ') . $m . $d->format(' Y');
+}
+
+function formateHeure($str_date){
+  $d = new DateTime($str_date);
+  return $d->format('G:i:s');
+}
+
 /**
  * Affiche la variable ou le tableau de manière lisible pour un humain
  * @param $continue boolean indique s'il faut continuer le script.

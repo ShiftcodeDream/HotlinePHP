@@ -1,44 +1,37 @@
 <?php
 include "utils/db.php";
 
-$sql = array();
-$sql['base'] = "SELECT t.*,
-  CONCAT(d.usr_nom, ' ', d.usr_prenom) as tkt_demandeur_nom,
-  CONCAT(te.usr_nom, ' ', te.usr_prenom) as tkt_technicien_nom
-  FROM Ticket t
-  LEFT JOIN Utilisateur d ON d.usr_id = t.tkt_demandeur
-  LEFT JOIN Utilisateur te ON te.usr_id = t.tkt_technicien ";
-
-$sql['modif'] = 'UPDATE Ticket SET 
-  tkt_titre = :tkt_titre,
-  tkt_description = :tkt_description,
-  tkt_solution = :tkt_solution,
-  tkt_urgence = :tkt_urgence,
-  tkt_impact = :tkt_impact,
-  tkt_demandeur = :tkt_demandeur,
-  tkt_technicien = :tkt_technicien,
-  tkt_etat = :tkt_etat,
-  tkt_temps_passe = :tkt_temps_passe,
-  tkt_date_demande = :tkt_date_demande,
-  tkt_date_pec = :tkt_date_pec,
-  tkt_date_solution = :tkt_date_solution,
-  WHERE tkt_id = :tkt_id';
-$sql['vuser'] = $sql['base'].'WHERE tkt_demandeur = :user_id';
-$sql['vatrait'] = $sql['base'].'WHERE tkt_etat = 0';
-$sql['vtech'] = $sql['base'].'WHERE tkt_technicien = :user_id';
-$sql['un'] = $sql['base'].'WHERE tkt_id = :id';
-$sql['inscrit'] = 'INSERT INTO Ticket
-  (tkt_titre, tkt_description, tkt_urgence,
-  tkt_demandeur, tkt_etat, tkt_date_demande)
-  VALUES(:tkt_titre, :tkt_description, :tkt_urgence,
-  :tkt_demandeur, 0, sysdate())';
-$sql['pec'] = 'UPDATE Ticket
-  SET tkt_etat = 2, tkt_technicien = :technicien
-  WHERE tkt_id = :id';
+$RequetesTicket = array(
+  'vuser' => 'SELECT * FROM TicketAll WHERE tkt_demandeur = :user_id',
+  'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat = 0',
+  'vtech' => 'SELECT * FROM TicketAll WHERE tkt_technicien = :user_id',
+  'un' => 'SELECT * FROM TicketAll WHERE tkt_id = :id',
+  'inscrit' => 'INSERT INTO Ticket
+    (tkt_titre, tkt_description, tkt_urgence,
+    tkt_demandeur, tkt_etat, tkt_date_demande)
+    VALUES(:tkt_titre, :tkt_description, :tkt_urgence,
+    :tkt_demandeur, 0, sysdate())',
+  'pec' => 'UPDATE Ticket SET tkt_etat = 1, tkt_technicien = :technicien
+    WHERE tkt_id = :id',
+  'modif' => 'UPDATE Ticket SET 
+    tkt_titre = :tkt_titre,
+    tkt_description = :tkt_description,
+    tkt_solution = :tkt_solution,
+    tkt_urgence = :tkt_urgence,
+    tkt_impact = :tkt_impact,
+    tkt_demandeur = :tkt_demandeur,
+    tkt_technicien = :tkt_technicien,
+    tkt_etat = :tkt_etat,
+    tkt_temps_passe = :tkt_temps_passe,
+    tkt_date_demande = :tkt_date_demande,
+    tkt_date_pec = :tkt_date_pec,
+    tkt_date_solution = :tkt_date_solution,
+    WHERE tkt_id = :tkt_id'
+);
 
 function getTicket($ticket_id){
-  global $sql;
-  return dbSelect($sql['un'], array('id' => $ticket_id));
+  global $RequetesTicket;
+  return dbSelect($RequetesTicket['un'], array('id' => $ticket_id));
 }
 
 /**
@@ -47,9 +40,9 @@ function getTicket($ticket_id){
  * @return int le numéro du ticket créé.
  **/
 function creeTicket($ticket){
-  global $db, $sql, $erreurs;
+  global $db, $RequetesTicket, $erreurs;
   try{
-    $req = $db->prepare($sql['inscrit']);
+    $req = $db->prepare($RequetesTicket['inscrit']);
     $req->execute(array(
       'tkt_titre' => $ticket['tkt_titre'], 
       'tkt_description' => $ticket['tkt_description'],
@@ -64,13 +57,13 @@ function creeTicket($ticket){
 }
 
 function getGenericListeTickets($nom, $params){
-  global $erreurs, $sql;
+  global $erreurs, $RequetesTicket;
   
-  if(!in_array($nom, $sql))
+  if(!array_key_exists($nom, $RequetesTicket))
     return array();
   
   try{
-    return dbSelect($sql[$nom], $params);
+    return dbSelect($RequetesTicket[$nom], $params);
   }catch (PDOException $err){
     $erreurs[] = "Erreur SQL sur la requète $nom : " . $err->getMessage();
     return array();

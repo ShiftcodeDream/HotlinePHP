@@ -158,37 +158,40 @@ include "view/footer.php";
  * @param champIndex string le nom du champ qui contient l'identifiant unique du ticket.
  * @param titre string titre de la vue à afficher
  */
-
-function afficheVueGeneriqueTickets($liste, $action, $champs, $champIndex="tkt_id", $titre="Liste des tickets"){
+function afficheListeTicketsATraiter($liste){
   global $erreurs, $messages;
+  $action = 'index.php?c=ticket&a=mod&id=';
   
   include "view/header.php";
-  echo "<h1>$titre</h1>\n";
+  echo "<h1>Liste des tickets à traiter</h1>\n";
 
   if(empty($liste)){
     echo "<p>Liste vide pour le moment.</p>\n";
     return;
   }
-
-  // entetes de colonne
-  echo "<table><tr>\n";
-  foreach($champs as $nom => $libelle){
-    echo "<th>$libelle</th>";
-  }
-  echo "</tr>\n";
+  enteteTableau(array('Titre', 'Demandeur', 'Date de la demande', 'Heure de la demande'));
   
-  // Lignes de détail
   foreach($liste as $donnee){
-      $uri = $action . $donnee[$champIndex];
-    echo "<tr onclick='document.location=\"$uri\"'>\n";
-    foreach($champs as $nom => $libelle){
-      echo "<td>$donnee[$nom]</td>";
-    }
-    echo "</tr>\n";
+    $uri = $action . $donnee['tkt_id'];
+?>
+    <tr onclick="document.location='<?=$uri?>'">
+      <td><?=$donnee['tkt_titre']?></td>
+      <td><?=$donnee['tkt_demandeur_nom']?></td>
+      <td><?=formateDate($donnee['tkt_date_demande'])?></td>
+      <td><?=formateHeure($donnee['tkt_date_demande'])?></td>
+    </tr>
+<?php
   }
-  echo "</table>\n";
-  
+  echo "</tbody></table>";
   include "view/footer.php";
+}
+
+function enteteTableau($titres){
+  echo "<table class='liste'><thead><tr>\n";
+  foreach($titres as $titre){
+    echo "<th>$titre</th>";
+  }
+  echo "</tr></thead>\n<tbody>\n";  
 }
 
 
