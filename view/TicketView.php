@@ -21,14 +21,14 @@ function ticketVueAfficheForm($o=null){
   echo "<form name='ticket' action='$action' method='post' onSubmit='return testeValidite()'>";
   echo '<h1>', is_null($o) ? "Création d'un" : 'Détails du'
     , " ticket au nom de "
-    , $existe ? $o['tkt_nom_demandeur'] : getSessionValue('user_name', '')
+    , $existe ? $o['tkt_demandeur_nom'] : getSessionValue('user_name', '')
     , '</h1>';
   
   
 ?>
   <input type="submit" value="<?=$action_texte?>">
 <?php
-  if($existe && estTechnicien()){
+  if($existe && estTechnicien() && $o['tkt_etat']==0){
     echo '<button type="button"
     onClick="document.location=\'index.php?c=ticket&a=pec&id='
     , $o['tkt_id']  
@@ -102,7 +102,7 @@ function ticketVueAfficheForm($o=null){
     </tr>
 <?php } ?>
 <?php
-  if(v($o, 'tkt_date_pec') !== ''){
+  if(v($o, 'tkt_etat') !== 0){
 ?>
     <tr>
       <td><label>Date de prise en charge</label></td>
@@ -136,7 +136,7 @@ function ticketVueAfficheForm($o=null){
     </tr>
     <tr>
       <td><label for="solution">Solution proposée</label></td>
-      <td><textarea name="solution" id="solution" cols="80" rows="10" <?=d(estTechnicien())?>><?=v($o, 'solution')?></textarea>
+      <td><textarea name="solution" id="solution" cols="80" rows="10" <?=d((v($o, 'tkt_technicien') == getSessionValue('user_id')) && (estTechnicien()))?>><?=v($o, 'solution')?></textarea>
       </td>
     </tr>
 <?php    
@@ -160,7 +160,7 @@ include "view/footer.php";
  */
 function afficheListeTicketsATraiter($liste){
   global $erreurs, $messages;
-  $action = 'index.php?c=ticket&a=mod&id=';
+  $action = 'index.php?c=ticket&a=visu&id=';
   
   include "view/header.php";
   echo "<h1>Liste des tickets à traiter</h1>\n";

@@ -28,8 +28,8 @@ CREATE TABLE Ticket (
 /* Vue avec noms des acteurs en clair */
 CREATE VIEW TicketAll AS
 SELECT t.*,
-  CONCAT(d.usr_nom, ' ', d.usr_prenom) as tkt_demandeur_nom,
-  CONCAT(te.usr_nom, ' ', te.usr_prenom) as tkt_technicien_nom
+  CONCAT(d.usr_prenom, ' ', d.usr_nom) as tkt_demandeur_nom,
+  CONCAT(te.usr_prenom, ' ', te.usr_nom) as tkt_technicien_nom
   FROM Ticket t
   LEFT JOIN Utilisateur d ON d.usr_id = t.tkt_demandeur
   LEFT JOIN Utilisateur te ON te.usr_id = t.tkt_technicien;

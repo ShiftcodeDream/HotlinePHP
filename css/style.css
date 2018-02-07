@@ -17,7 +17,7 @@ body{
   border-bottom:2px solid DarkGreen;
   font-size:28px;  
 }
-.info, .erreur ul{
+.info ul, .erreur ul{
   margin:0;
   list-style: none;
 }
@@ -130,4 +130,3 @@ table.liste tbody tr:hover{
 table.liste tbody tr:nth-of-type(2n+1){
   background-color: #ddf;
 }
-

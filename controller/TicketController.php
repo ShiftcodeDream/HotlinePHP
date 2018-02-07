@@ -15,18 +15,14 @@ switch($action){
   case 'new' : 
     ticketVueAfficheForm();
     break;
-  // TODO Enregistrer un ticket
+  // Enregistrer un ticket
   case 'inscrit' :  
     enregistrerTicket();
     break;
   // TODO Prendre en charge un ticket
   case 'pec' : 
-    if(estTechnicien()){
-      priseEnChargeTicket();
-    }else{
-      $erreurs[] = "Vous ne pouvez prendre en charge un ticket car vous n'êtes pas technicien...";
-      listeTicketsUtilisateur();
-    }
+    actionPECTicket();
+    break;
   // TODO Modifier un ticket
   case 'mod' :  
     modifierTicket();
@@ -34,6 +30,7 @@ switch($action){
   // TODO Afficher un ticket
   case 'visu' : 
     ticketVueAfficheForm(getTicket(getValue('id')));
+    break;
   // TODO Lister les tickets à traiter (technicien seulement)
   case 'vatrait' :  
     vueParDefaut();
@@ -89,7 +86,7 @@ function enregistrerTicket(){
     exit;
   }
   
-  // Sinon, création du ticket
+  // Si tout est OK, création du ticket
   $num = creeTicket($ticket);
   if($num > 0){
     $messages[] = "Demande n° $num créée.";
@@ -99,17 +96,23 @@ function enregistrerTicket(){
 }
 
 function modifierTicket(){
-  // TODO Vérifier que le ticket existe en base de données
-  
+  $id = getValue('id');
+  // Vérifier que le ticket existe en base de données
+  $ticket = getTicket($d);
+  if(is_null($ticket)){
+    $erreurs[] = "Ticket $id introuvable...";
+    vueParDefaut();
+  }
+  // On ne peut vérifier qu'un produit
+  if($ticket['tkt_demandeur'] != getSessionValue('user_id')){
+    
+  }
   // TODO Si non technicien, vérifier que l'utilisateur actuel est le propriétaire du ticket
   
-  $ticket = getTicket(getValue('id'));
-  ticketVueAfficheForm($ticket);
 }
 
 function listeTicketsATraiter(){
   $liste = getGenericListeTickets('vatrait', null);
-
   afficheListeTicketsATraiter($liste);
 }
 
@@ -123,8 +126,18 @@ function listeTicketsUtilisateur(){
   include_once "view/header.php";
 }
 
-function priseEnChargeTicket(){
-  
+function actionPECTicket(){
+  global $erreurs, $messages;
+  if(!estTechnicien()){
+    $erreurs[] = "Vous ne pouvez prendre en charge un ticket car vous n'êtes pas technicien...";
+    listeTicketsUtilisateur();
+  }else{
+    $id = getValue('id');
+    if(prendEnChargeTicket($id, getSessionValue('user_id'))){
+      $messages[]= "Ticket $id pris en charge.";
+    }
+    modifierTicket();
+  }
 }
 
 // Affiche la vue par défaut en fonction du rôle de la personne
@@ -136,12 +149,5 @@ function vueParDefaut(){
   else
     listeTicketsUtilisateur();
 }
-
-
-
-
-
-
-
 
 ?>

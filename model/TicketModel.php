@@ -11,7 +11,10 @@ $RequetesTicket = array(
     tkt_demandeur, tkt_etat, tkt_date_demande)
     VALUES(:tkt_titre, :tkt_description, :tkt_urgence,
     :tkt_demandeur, 0, sysdate())',
-  'pec' => 'UPDATE Ticket SET tkt_etat = 1, tkt_technicien = :technicien
+  'pec' => 'UPDATE Ticket
+    SET tkt_etat = 1,
+    tkt_date_pec = curtime(),
+    tkt_technicien = :technicien
     WHERE tkt_id = :id',
   'modif' => 'UPDATE Ticket SET 
     tkt_titre = :tkt_titre,
@@ -28,12 +31,29 @@ $RequetesTicket = array(
     tkt_date_solution = :tkt_date_solution,
     WHERE tkt_id = :tkt_id'
 );
-
+/**
+ * @param ticket_id int numéro de ticket
+ * @return array renvoie un ticket s'il existe
+ **/
 function getTicket($ticket_id){
   global $RequetesTicket;
-  return dbSelect($RequetesTicket['un'], array('id' => $ticket_id));
+  return dbGetOne($RequetesTicket['un'], array('id' => $ticket_id));
 }
 
+/**
+ * Prend en charge un ticket
+ * @param $ticket_id int numéro de ticket
+ * @param $tech_id int identifiant du technicien qui prend en charge le ticket
+ **/
+function prendEnChargeTicket($ticket_id, $tech_id){
+  global $RequetesTicket;
+  return dbExecute(
+    $RequetesTicket['pec'],
+    array(
+      'id' => $ticket_id,
+      'technicien' => $tech_id)
+  );
+}
 /**
  * Créée un ticket dans la base de données
  * @param $ticket Tableau associatif contenant les valeurs à insérer
