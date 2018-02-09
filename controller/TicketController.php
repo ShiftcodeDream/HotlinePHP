@@ -17,21 +17,18 @@ switch($action){
     break;
   // Enregistrer un ticket
   case 'inscrit' :  
+  case 'mod' :  
     enregistrerTicket();
     break;
-  // TODO Prendre en charge un ticket
+  // Prendre en charge un ticket
   case 'pec' : 
     actionPECTicket();
     break;
-  // TODO Modifier un ticket
-  case 'mod' :  
-    modifierTicket();
-    break;
-  // TODO Afficher un ticket
+  // Afficher un ticket
   case 'visu' : 
-    ticketVueAfficheForm(getTicket(getValue('id')));
+    voirModifTicket();
     break;
-  // TODO Lister les tickets à traiter (technicien seulement)
+  // Lister les tickets à traiter (technicien seulement)
   case 'vatrait' :  
     vueParDefaut();
     break;
@@ -39,6 +36,9 @@ switch($action){
   case 'vtech' : 
     listeTicketsDuTechnicien();
     break;
+  // TODO Clore le ticket
+  case 'clore' :
+    cloreTicket();
   // TODO Lister les tickets d'un utilisateur
   case 'vuser' : 
   default :
@@ -46,16 +46,32 @@ switch($action){
     exit;
 }
 
-// Vérifie les données saisies et créé un nouveau ticket si tout est OK.
+// TODO Clore le ticket
+function cloreTicket(){
+  
+}
+
+/**
+ * Effectue l'ajout et la mise à jour d'un ticket
+ * en ayant pris soin de vérifier les éléments saisis
+ **/
 function enregistrerTicket(){
   global $erreurs, $champsErreur;
   
   $ticket = array(
+    'tkt_id' => getValue('id'),
     'tkt_titre' => trim(getValue('titre')),
     'tkt_description' => trim(getValue('description')),
     'tkt_urgence' => getValue('urgence'),
     'tkt_demandeur' => getSessionValue('user_id')
   );
+  
+  // Vérifier que la personne a le droit de modifier le ticket
+  if(!verifieDroitsTicket($ticket)){
+    $erreurs[] = "Vous ne pouvez modifier que vos propres tickets";
+    vueParDefaut();
+    return;
+  }
   
   // Vérification du titre
   if(strlen($ticket['tkt_titre']) == 0){
@@ -86,29 +102,48 @@ function enregistrerTicket(){
     exit;
   }
   
-  // Si tout est OK, création du ticket
-  $num = creeTicket($ticket);
-  if($num > 0){
-    $messages[] = "Demande n° $num créée.";
+  
+  
+  // Si tout est OK, création / modification du ticket
+  if(isset($ticket['tkt_id'])){
+    modifieTicket($ticket);
+    $messages[] = "Ticket modifié avec succès";
     vueParDefaut();
-    exit;
+  }else{
+    $num = creeTicket($ticket);
+    if($num > 0){
+      $messages[] = "Demande n° $num créée.";
+      vueParDefaut();
+    }
   }
 }
 
-function modifierTicket(){
+// Demande le formulaire d'accès au ticket.
+// Si le ticket existe et que la personne est autorisée à le consulter
+// modifier, affiche le ticket en modification
+// Si le ticket n'existe pas, afficher le formulaire vierge.
+function voirModifTicket(){
   $id = getValue('id');
-  // Vérifier que le ticket existe en base de données
-  $ticket = getTicket($d);
+  // Pour les nouveaux tickets
+  $ticket = getTicket($id);
   if(is_null($ticket)){
-    $erreurs[] = "Ticket $id introuvable...";
-    vueParDefaut();
+    ticketVueAfficheForm();
   }
-  // On ne peut vérifier qu'un produit
-  if($ticket['tkt_demandeur'] != getSessionValue('user_id')){
-    
+  if(!verifieDroitsTicket($ticket)){
+    $erreurs[] = "Vous ne pouvez modifier que vos propres tickets.";
+    listeTicketsUtilisateur();    
+  }else{
+    ticketVueAfficheForm($ticket);
   }
-  // TODO Si non technicien, vérifier que l'utilisateur actuel est le propriétaire du ticket
-  
+}
+
+/**
+ * Vérifie que la personne a bien le droit d'accéder au ticket
+ @return boolean true si l'utilisateur a le droit d'accéder au ticket
+ **/
+function verifieDroitsTicket($ticket){
+  // L'utilisateur ne peut consulter / modifier que ses propres tickets
+  return estTechnicien() || $ticket['tkt_demandeur'] == getSessionValue('user_id');
 }
 
 function listeTicketsATraiter(){
@@ -133,10 +168,19 @@ function actionPECTicket(){
     listeTicketsUtilisateur();
   }else{
     $id = getValue('id');
-    if(prendEnChargeTicket($id, getSessionValue('user_id'))){
-      $messages[]= "Ticket $id pris en charge.";
+    switch(prendEnChargeTicket($id, getSessionValue('user_id'))){
+      case -1 : 
+        $erreurs[] = "Ticket $id non trouvé";
+        vueParDefaut();
+        break;
+      case -2 :
+        $messages[] = "Ce ticket a déjà été pris en compte";
+        voirModifTicket();
+        break;
+      default :     
+        $messages[]= "Ticket $id pris en charge.";
+        voirModifTicket();
     }
-    modifierTicket();
   }
 }
 

@@ -28,11 +28,17 @@ function ticketVueAfficheForm($o=null){
 ?>
   <input type="submit" value="<?=$action_texte?>">
 <?php
-  if($existe && estTechnicien() && $o['tkt_etat']==0){
-    echo '<button type="button"
-    onClick="document.location=\'index.php?c=ticket&a=pec&id='
+  if($existe && estTechnicien()){
+    if($o['tkt_etat']==0){
+      echo '<input type="button"
+      onClick="document.location=\'index.php?c=ticket&a=pec&id='
+      , $o['tkt_id']  
+      , '\'" value="Prendre en charge"</button">';
+    }
+    echo '<input type="button"
+    onClick="document.location=\'index.php?c=ticket&a=clore&id='
     , $o['tkt_id']  
-    , '\'">Prendre en charge</button>';
+    , '\'" value="Clore le ticket">';
   }
 ?>
   <table>
@@ -130,7 +136,7 @@ function ticketVueAfficheForm($o=null){
       <td><label for="temps">Temps de résolution</label></td>
       <td>
         <input type="text" id="temps" name="temps" size="5"
-          value="<?=v($o,'tkt_temps_passe')?>"
+          value="<?=v($o,'tkt_temps_passe')==0 ? '' : v($o,'tkt_temps_passe')?>"
           <?=d((v($o, 'tkt_technicien') == getSessionValue('user_id')) && (estTechnicien()))?>> (en minutes)
       </td>
     </tr>

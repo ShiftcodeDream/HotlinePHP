@@ -10,7 +10,7 @@ $RequetesTicket = array(
     (tkt_titre, tkt_description, tkt_urgence,
     tkt_demandeur, tkt_etat, tkt_date_demande)
     VALUES(:tkt_titre, :tkt_description, :tkt_urgence,
-    :tkt_demandeur, 0, sysdate())',
+    :tkt_demandeur, 0, systime())',
   'pec' => 'UPDATE Ticket
     SET tkt_etat = 1,
     tkt_date_pec = curtime(),
@@ -47,6 +47,11 @@ function getTicket($ticket_id){
  **/
 function prendEnChargeTicket($ticket_id, $tech_id){
   global $RequetesTicket;
+  $ticket = getTicket($ticket_id);
+  if(is_null($ticket))
+    return -1;
+  if($ticket['tkt_etat'] != 0)
+    return -2;
   return dbExecute(
     $RequetesTicket['pec'],
     array(

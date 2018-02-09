@@ -38,7 +38,7 @@ body{
   padding: 10px;
   font-size:24px;
 }
-.loginform input[type=submit]{
+.loginform input[type=submit], .loginForm input[type=button]{
   width:100%;
 }
 h1{
@@ -107,7 +107,7 @@ textarea{
 #titre{
   width:100%;
 }
-input[type=submit], button{
+input[type=submit], input[type=button]{
   padding:0.5em 1em;
   font-size:20px;
   font-weight:bold;
