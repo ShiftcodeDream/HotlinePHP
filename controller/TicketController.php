@@ -1,6 +1,7 @@
 <?php
 include "view/TicketView.php";
 include "model/TicketModel.php";
+include "model/TicketClass.php";
 
 // Si la personne n'est pas connectée, retour à la page d'authentification
 if(is_null(getSessionValue('user_id'))){
@@ -123,13 +124,11 @@ function enregistrerTicket(){
 // modifier, affiche le ticket en modification
 // Si le ticket n'existe pas, afficher le formulaire vierge.
 function voirModifTicket(){
-  $id = getValue('id');
-  // Pour les nouveaux tickets
-  $ticket = getTicket($id);
-  if(is_null($ticket)){
+  $ticket = new Ticket(getValue('id'));
+  if(!$ticket->existe())
     ticketVueAfficheForm();
-  }
-  if(!verifieDroitsTicket($ticket)){
+  
+  if(!$ticket->verifieDroitsVisu(getSessionValue('user_id'), getSessionValue('user_role'))){
     $erreurs[] = "Vous ne pouvez modifier que vos propres tickets.";
     listeTicketsUtilisateur();    
   }else{
@@ -147,7 +146,7 @@ function verifieDroitsTicket($ticket){
 }
 
 function listeTicketsATraiter(){
-  $liste = getGenericListeTickets('vatrait', null);
+  $liste = Ticket::getList('vatrait', null);
   afficheListeTicketsATraiter($liste);
 }
 

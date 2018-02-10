@@ -66,4 +66,17 @@ function dbGetOne($sql, $params){
   
   return empty($reponse) ? null : $reponse;
 }
+
+/**
+ * Prépare et exécute l'insertion d'un valeur dans la table
+ * @param $sql string la requete à préparer
+ * @param $params array Liste des valeurs des champs à insérer
+ * @return int renvoie l'id de l'élément créé en cas de succès,
+ * 0 en cas d'échec de l'insertion
+ **/
+function dbInsert($sql, $params){
+  global $db;
+  $req = $db->prepare($sql);
+  return $req->execute($params) ? $db->lastInsertId() : 0;
+}
 ?>

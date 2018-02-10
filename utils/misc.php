@@ -114,4 +114,22 @@ function myDump($variable, $continue=false){
   echo "</xmp>";
   $continue || die("--FIN--");
 }
+
+/**
+ * Sert pour les tags HTML de type options
+ * Permet d'inscrire la valeur de l'option, et si la valeur de l'option correspond
+ * à la valeur réelle du champ, alors ajoute le mot 'selected' pour que le navigateur
+ * sélectionne cette option à l'affichage.
+ * @param $valeurChamp string valeur du champ de saisie
+ * @param $valeurOption string valeur de l'option en train d'être définie
+ * @return value="[valeurOption]" selected (seulement si $valeurChamp=$valeurOption)
+ **/
+
+function optionSelection($valeurChamp, $valeurOption){
+  if($valeurChamp === $valeurOption)
+    $s = ' selected';
+  else
+    $s='';
+  return 'value="' . $valeurOption . '"' . $s;
+}
 ?>
