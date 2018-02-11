@@ -11,18 +11,11 @@ class Ticket{
   const PRIS_EN_CHARGE = 1;
   const RESOLU = 2;
   
-  const LIBELLE_ETAT = [
+	// Les constantes de classe n'admettent les tableaux qu'à partir de la version 5.6
+	protected $libelleEtat = [
     self::SOUMIS => 'soumis',
     self::PRIS_EN_CHARGE => 'pris en charge',
     self::RESOLU => 'résolu'
-  ];
-  
-  const LIBELLE_URGENCE = [
-    '',
-    'pas du tout',
-    'un peu',
-    'moyenne',
-    'élevée'
   ];
   
   protected $id = 0;
@@ -44,7 +37,7 @@ class Ticket{
   // Requetes utilisées par les différentes listes
   protected static $requetes = [
     'vuser'   => 'SELECT * FROM TicketAll WHERE tkt_demandeur = :user_id',
-    'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat = ' . self::SOUMIS,
+    'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat = 0',
     'vtech'   => 'SELECT * FROM TicketAll WHERE tkt_technicien = :user_id',
   ];
   /** Le constructeur. Si l'id est renseigné et non égal à 0,
@@ -94,7 +87,7 @@ class Ticket{
         (tkt_titre, tkt_description, tkt_urgence,
         tkt_demandeur, tkt_etat, tkt_date_demande)
         VALUES(:titre, :description, :urgence, :demandeur,
-        0, curtime())',
+        0, now())',
         array(
           'titre'       => $this->titre,
           'description' => $this->description,
@@ -226,7 +219,7 @@ class Ticket{
     if(!empty($this->id) && ($this->etat == self::SOUMIS)){
       $dbExecute(
         'UPDATE Ticket SET tkt_etat = ' . self::PRIS_EN_CHARGE .'
-        tkt_date_pec = curtime(), tkt_technicien = :technicien
+        tkt_date_pec = now(), tkt_technicien = :technicien
         WHERE tkt_id = :id',
         array(
           'technicien' => $technicien,
@@ -252,7 +245,7 @@ class Ticket{
     if(!empty($this->id) && ($this->etat == self::PRIS_EN_CHARGE)){
       $dbExecute(
         'UPDATE Ticket SET tkt_etat = ' . self::RESOLU. ',
-          tkt_date_solution = curtime()
+          tkt_date_solution = now()
           WHERE tkt_id = :id',
         array('id' => $this->id)
       );
@@ -342,18 +335,27 @@ class Ticket{
   public function getLibelleEtat(){
     if(! $this->existe())
       return 'non créé';
-    if(!array_key_exists($this->etat, self::LIBELLE_ETAT))
+    if(!array_key_exists($this->etat, $this->libelleEtat))
       return 'inconnu';
-    return self::LIBELLE_ETAT[$this->etat];
+    return $this->libelleEtat[$this->etat];
   }
   /**
    * @param $urgence int degré d'urgence
    * @return string Libellé de l'urgence
    **/
   public static function getLibelleUrgence($urgence){
-    if(!array_key_exists($urgence, self::LIBELLE_URGENCE))
-      return 'inconnu';
-    return self::LIBELLE_URGENCE[$urgence];    
+  	switch($urgence){
+			case 1 :
+				return 'pas du tout';
+			case 2 :
+				return 'un peu';
+			case 3 : 
+				return 'moyenne';
+			case 4 :
+				return 'élevée';
+			default :
+				return 'inconnue';
+		}
   }
 }
 ?>

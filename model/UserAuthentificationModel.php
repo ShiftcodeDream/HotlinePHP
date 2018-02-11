@@ -5,7 +5,7 @@ function authentifieUtilisateur($user, $password){
   global $db;
   
   $requete = $db->prepare('
-    SELECT * FROM utilisateur
+    SELECT * FROM Utilisateur
     WHERE lower(usr_login)=:user
     AND usr_passwd=:pass');
   
