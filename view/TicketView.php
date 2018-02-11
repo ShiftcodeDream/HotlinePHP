@@ -25,6 +25,7 @@ function ticketVueAfficheForm($o = null){
     , $existe ? $o->getDemandeurNom() : getSessionValue('user_name', 'inconnu')
     , '</h1>';    
 ?>
+  <input type="button" value="Retour" onclick="document.location='index.php'">
   <input type="submit" value="<?=$action_texte?>">
 <?php
   if($existe && estTechnicien()){
@@ -33,10 +34,12 @@ function ticketVueAfficheForm($o = null){
       onClick="document.location=\'index.php?c=ticket&a=pec&id=', $id  
       , '\'" value="Prendre en charge"</button">';
     }
-    echo '<input type="button"
-    onClick="document.location=\'index.php?c=ticket&a=clore&id='
-    , $id
-    , '\'" value="Clore le ticket">';
+    if($o->estPrisEnCharge()){
+      echo '<input type="button"
+      onClick="document.location=\'index.php?c=ticket&a=clore&id='
+      , $id
+      , '\'" value="Clore le ticket">';
+    }
   }
 ?>
   <table>
@@ -79,10 +82,10 @@ function ticketVueAfficheForm($o = null){
       <td><label for="urgence">Urgence</label></td>
       <td>
         <select name="urgence" id="urgence">
-          <option <?=optionSelection($urgence, 1)?> >pas du tout</option>
-          <option <?=optionSelection($urgence, 2)?> >>peu</option>
-          <option <?=optionSelection($urgence, 3)?> >moyenne</option>
-          <option <?=optionSelection($urgence, 4)?> >élevée</option>
+          <option <?=optionSelection($urgence, 1)?>>pas du tout</option>
+          <option <?=optionSelection($urgence, 2)?>>un peu</option>
+          <option <?=optionSelection($urgence, 3)?>>moyenne</option>
+          <option <?=optionSelection($urgence, 4)?>>élevée</option>
         </select></td>
     </tr>
 <?php if($existe && estTechnicien()) {
@@ -92,11 +95,11 @@ function ticketVueAfficheForm($o = null){
       <td><label for="impact">Impact global</label></td>
       <td>
         <select name="impact" id="impact" <?=d(estTechnicien())?>>
-          <option <?=optionSelection($impact, 1)?> >aucun</option>
-          <option <?=optionSelection($impact, 2)?> >faible</option>
-          <option <?=optionSelection($impact, 3)?> >moyen</option>
-          <option <?=optionSelection($impact, 4)?> >élevé</option>
-          <option <?=optionSelection($impact, 5)?> >critique</option>
+          <option <?=optionSelection($impact, 1)?>>aucun</option>
+          <option <?=optionSelection($impact, 2)?>>faible</option>
+          <option <?=optionSelection($impact, 3)?>>moyen</option>
+          <option <?=optionSelection($impact, 4)?>>élevé</option>
+          <option <?=optionSelection($impact, 5)?>>critique</option>
         </select></td>
     </tr>
 <?php } ?>
@@ -171,16 +174,17 @@ function afficheListeTicketsATraiter($liste){
     echo "<p>Liste vide pour le moment.</p>\n";
     return;
   }
-  enteteTableau(array('Titre', 'Demandeur', 'Date de la demande', 'Heure de la demande'));
+  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Date de la demande', 'Heure de la demande'));
   
   foreach($liste as $donnee){
     $uri = $action . $donnee['tkt_id'];
 ?>
     <tr onclick="document.location='<?=$uri?>'">
-      <td><?=$donnee['tkt_titre']?></td>
-      <td><?=$donnee['tkt_demandeur_nom']?></td>
-      <td><?=formateDate($donnee['tkt_date_demande'])?></td>
-      <td><?=formateHeure($donnee['tkt_date_demande'])?></td>
+      <td><?= $donnee['tkt_titre'] ?></td>
+      <td><?= $donnee['tkt_demandeur_nom'] ?></td>
+      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
+      <td><?= formateDate($donnee['tkt_date_demande']) ?></td>
+      <td><?= formateHeure($donnee['tkt_date_demande']) ?></td>
     </tr>
 <?php
   }

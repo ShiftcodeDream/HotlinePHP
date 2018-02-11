@@ -126,7 +126,7 @@ function myDump($variable, $continue=false){
  **/
 
 function optionSelection($valeurChamp, $valeurOption){
-  if($valeurChamp === $valeurOption)
+  if($valeurChamp == $valeurOption)
     $s = ' selected';
   else
     $s='';

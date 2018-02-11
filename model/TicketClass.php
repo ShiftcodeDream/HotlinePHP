@@ -17,12 +17,20 @@ class Ticket{
     self::RESOLU => 'résolu'
   ];
   
+  const LIBELLE_URGENCE = [
+    '',
+    'pas du tout',
+    'un peu',
+    'moyenne',
+    'élevée'
+  ];
+  
   protected $id = 0;
   protected $titre ='';
   protected $description = '';
   protected $solution = '';
-  protected $urgence = 0;
-  protected $impact = 0;
+  protected $urgence = 1;
+  protected $impact = 1;
   protected $demandeur = 0;
   protected $technicien = 0;
   protected $etat = 0;
@@ -86,7 +94,7 @@ class Ticket{
         (tkt_titre, tkt_description, tkt_urgence,
         tkt_demandeur, tkt_etat, tkt_date_demande)
         VALUES(:titre, :description, :urgence, :demandeur,
-        0, systime())',
+        0, curtime())',
         array(
           'titre'       => $this->titre,
           'description' => $this->description,
@@ -337,6 +345,15 @@ class Ticket{
     if(!array_key_exists($this->etat, self::LIBELLE_ETAT))
       return 'inconnu';
     return self::LIBELLE_ETAT[$this->etat];
+  }
+  /**
+   * @param $urgence int degré d'urgence
+   * @return string Libellé de l'urgence
+   **/
+  public static function getLibelleUrgence($urgence){
+    if(!array_key_exists($urgence, self::LIBELLE_URGENCE))
+      return 'inconnu';
+    return self::LIBELLE_URGENCE[$urgence];    
   }
 }
 ?>

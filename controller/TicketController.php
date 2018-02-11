@@ -8,7 +8,7 @@ if(is_null(getSessionValue('user_id'))){
   header('Location: index.php');
   exit;
 }
-  
+
 $action = getValue('a');
 
 switch($action){
@@ -57,68 +57,83 @@ function cloreTicket(){
  * en ayant pris soin de vérifier les éléments saisis
  **/
 function enregistrerTicket(){
-  global $erreurs, $champsErreur;
+  global $erreurs, $champsErreur, $messages;
   
-  $ticket = array(
-    'tkt_id' => getValue('id'),
-    'tkt_titre' => trim(getValue('titre')),
-    'tkt_description' => trim(getValue('description')),
-    'tkt_urgence' => getValue('urgence'),
-    'tkt_demandeur' => getSessionValue('user_id')
+  $ticket = new Ticket(
+    $id = getValue('id')
   );
-  
-  // Vérifier que la personne a le droit de modifier le ticket
-  if(!verifieDroitsTicket($ticket)){
-    $erreurs[] = "Vous ne pouvez modifier que vos propres tickets";
-    vueParDefaut();
-    return;
+  // S'il s'agit de la modification d'un ticket existant
+  if($ticket->existe()){
+    // Vérifier que l'utilisateur a bien le droit de modifier ce ticket
+    if(! $ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role'))){
+      $erreurs[] = "Vous n'êtes pas le demandeur de ce ticket, vous ne pouvez pas le modifier.";
+      vueParDefaut();
+      return;
+    }
+    
+    verifieChampsDeBase($ticket);
+
+
+    echo '***** TODO Continuer la modif du ticket *****';
+    
+    
+  }else{
+    // Création d'un nounveau ticket 
+    
   }
   
+  $ticket->setTitre(htmlentities(trim(getValue('titre'))));
+  $ticket->setDescription(htmlentities(trim(getValue('description'))));
+  $ticket->setUrgence(getValue('urgence'));
+  if(verifieChampsDeBase($ticket)){
+    $ticket->setDemandeur(getSessionValue('user_id'));
+    $id = $ticket->sauvegardeDonnees();
+    if(!empty($id))
+      $messages[] = "Demande n° " . $ticket->getId() . " soumise avec succès.";
+    else
+      $erreurs[] = "Une erreur s'est produite lors de la création du ticket...";
+    vueParDefaut();
+  }else{
+    // Affichage du formulaire avec les messages d'erreurs
+    ticketVueAfficheForm($ticket);
+  }
+}
+
+/**
+ * Vérifie les champs de base du formulaire (ceux de la demande initiale)
+ * Les variables sont passées par référence car elles peuvent subir des transformations
+ * @param $ticket Ticket le ticket à vérifier
+ * @return boolean true si tous les champs sont OK, false sinon
+ * Si des erreurs sont détectées, elles sont consignées dans les tableaux $erreurs et $champsErreur
+ **/
+function verifieChampsDeBase($ticket){
+  global $erreurs, $champsErreur;
+
   // Vérification du titre
-  if(strlen($ticket['tkt_titre']) == 0){
+  if(strlen($ticket->getTitre()) == 0){
     $erreurs[] = "Vous n'avez pas renseigné le titre";
     $champsErreur[] = "titre";
   }
   
   // Vérification de la description
-  if(strlen($ticket['tkt_description']) == 0){
+  if(strlen($ticket->getDescription()) == 0){
     $erreurs[] = "Vous n'avez pas renseigné la description";
     $champsErreur[] = "description";
   }
   
   // Vérification du degré d'urgence
-  switch($ticket['tkt_urgence']){
-    case '1':
-    case '2':
-    case '3':
-    case '4':
+  switch($ticket->getUrgence()){
+    case 1:
+    case 2:
+    case 3:
+    case 4:
       break;
     default:
-      $ticket['tkt_urgence'] = '1';
+      $ticket->setUrgence(1);
   }
-  
-  // Si des champs sont en erreur
-  if(!empty($champsErreur)){
-    ticketVueAfficheForm($ticket);
-    exit;
-  }
-  
-  
-  
-  // Si tout est OK, création / modification du ticket
-  if(isset($ticket['tkt_id'])){
-    modifieTicket($ticket);
-    $messages[] = "Ticket modifié avec succès";
-    vueParDefaut();
-  }else{
-    $num = creeTicket($ticket);
-    if($num > 0){
-      $messages[] = "Demande n° $num créée.";
-      vueParDefaut();
-    }
-  }
+  return empty($champsErreur);
 }
-
+  
 // Demande le formulaire d'accès au ticket.
 // Si le ticket existe et que la personne est autorisée à le consulter
 // modifier, affiche le ticket en modification
@@ -134,15 +149,6 @@ function voirModifTicket(){
   }else{
     ticketVueAfficheForm($ticket);
   }
-}
-
-/**
- * Vérifie que la personne a bien le droit d'accéder au ticket
- @return boolean true si l'utilisateur a le droit d'accéder au ticket
- **/
-function verifieDroitsTicket($ticket){
-  // L'utilisateur ne peut consulter / modifier que ses propres tickets
-  return estTechnicien() || $ticket['tkt_demandeur'] == getSessionValue('user_id');
 }
 
 function listeTicketsATraiter(){
