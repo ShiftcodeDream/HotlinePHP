@@ -103,6 +103,8 @@ class Ticket{
     }
     // Mise à jour d'un ticket existant
     else{
+      if(empty($this->temps_passe))
+        $this->temps_passe=0;
       dbExecute(
         'UPDATE Ticket SET 
           tkt_titre = :titre,
@@ -112,8 +114,8 @@ class Ticket{
           tkt_impact = :impact,
           tkt_demandeur = :demandeur,
           tkt_technicien = :technicien,
-          tkt_temps_passe = :temps_passe,
-        WHERE tkt_id = :tkt_id',     
+          tkt_temps_passe = :temps_passe
+        WHERE tkt_id = :id',     
         array(
           'titre'       => $this->titre,
           'description' => $this->description,
@@ -122,7 +124,8 @@ class Ticket{
           'impact'      => $this->impact,
           'demandeur'   => $this->demandeur,
           'technicien'  => $this->technicien,
-          'temps_passe' => $this->temps_passe
+          'temps_passe' => $this->temps_passe,
+          'id'          => $this->id
         )
       );
       // Recharge les données avec les nouvelles valeurs présentes en base de données

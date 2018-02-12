@@ -1,6 +1,5 @@
 <?php
 include "view/TicketView.php";
-include "model/TicketModel.php";
 include "model/TicketClass.php";
 
 // Si la personne n'est pas connectée, retour à la page d'authentification
@@ -19,7 +18,13 @@ switch($action){
   // Enregistrer un ticket
   case 'inscrit' :  
   case 'mod' :  
-    enregistrerTicket();
+    
+    $t = enregistrerTicket();
+    if($t){
+      
+    }else{
+      ticketVueAfficheForm($t);
+    }
     break;
   // Prendre en charge un ticket
   case 'pec' : 
@@ -55,6 +60,8 @@ function cloreTicket(){
 /**
  * Effectue l'ajout et la mise à jour d'un ticket
  * en ayant pris soin de vérifier les éléments saisis
+ * @return Ticket Renvoie le ticket créé / modifié en cas de succès,
+ * et false en cas d'erreur.
  **/
 function enregistrerTicket(){
   global $erreurs, $champsErreur, $messages;
@@ -70,32 +77,62 @@ function enregistrerTicket(){
       vueParDefaut();
       return;
     }
-    
+    // Commence par valider les champs vérifiés lors de la création
     verifieChampsDeBase($ticket);
-
-
-    echo '***** TODO Continuer la modif du ticket *****';
+    // Puis effectue la vérification des autres champs. Ces champs ne peuvent
+    // être modifiés que si l'utilisateur est le technicien en charge du ticket.
+    // Sinon, ils sont simplement ignorés.
+    if(estTechnicien() && $ticket->getTechnicien() == getSessionValue("user_id")){
+      $impact = getValue('impact', 1);
+      switch($impact){
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+          break;
+        default :
+          $impact = 1;
+      }
+      $ticket->setImpact($impact);
+      
+      // Enregistre la solution apportée
+      // Elle ne sera validée que lorsque le technicien voudra clore le ticket
+      // En attendant la clôture, la solution peut être vide.
+      $ticket->setSolution(htmlentities(trim(getValue('solution', ''))));
+      
+      // Enregistre le temps passé
+      // Doit être numérique
+      $temps = getValue('temps', '');
+      if(!isset($temps) && !is_numeric($temps)){
+        $erreurs[] = "Vous devez saisir une valeur numérique pour le temps passé.";
+        $champsErreur[] = "temps";
+      }else{
+        $ticket->setTempsPasse($temps);
+      }
+    } // Fin si est technicien en charge du ticket en cours
     
-    
+    // Si tout est OK, on enregistre le ticket
+    if(empty($erreurs))
+      return $ticket->sauvegardeDonnees();
+    else
+      return false;
+
   }else{
     // Création d'un nounveau ticket 
-    
-  }
-  
-  $ticket->setTitre(htmlentities(trim(getValue('titre'))));
-  $ticket->setDescription(htmlentities(trim(getValue('description'))));
-  $ticket->setUrgence(getValue('urgence'));
-  if(verifieChampsDeBase($ticket)){
-    $ticket->setDemandeur(getSessionValue('user_id'));
-    $id = $ticket->sauvegardeDonnees();
-    if(!empty($id))
-      $messages[] = "Demande n° " . $ticket->getId() . " soumise avec succès.";
-    else
-      $erreurs[] = "Une erreur s'est produite lors de la création du ticket...";
-    vueParDefaut();
-  }else{
-    // Affichage du formulaire avec les messages d'erreurs
-    ticketVueAfficheForm($ticket);
+    $ticket->setTitre(htmlentities(trim(getValue('titre'))));
+    $ticket->setDescription(htmlentities(trim(getValue('description'))));
+    $ticket->setUrgence(getValue('urgence'));
+    if(verifieChampsDeBase($ticket)){
+      $ticket->setDemandeur(getSessionValue('user_id'));
+      $id = $ticket->sauvegardeDonnees();
+      if(!empty($id))
+        $messages[] = "Demande n° " . $ticket->getId() . " soumise avec succès.";
+      else
+        $erreurs[] = "Une erreur s'est produite lors de la création du ticket...";
+      return $id;
+    }else{
+      return false;
+    }
   }
 }
 
