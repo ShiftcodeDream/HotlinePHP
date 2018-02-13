@@ -220,17 +220,15 @@ class Ticket{
   public function prendreEnCharge($technicien){
     global $erreurs;
     if(!empty($this->id) && ($this->etat == self::SOUMIS)){
-      $dbExecute(
+      dbExecute(
         'UPDATE Ticket SET tkt_etat = ' . self::PRIS_EN_CHARGE .'
         tkt_date_pec = now(), tkt_technicien = :technicien
         WHERE tkt_id = :id',
         array(
-          'technicien' => $technicien,
-          'id' => $this->id
+          'technicien' => (int)$technicien,
+          'id' => (int)$this->id
         ));
       $this->chargeDonnees();
-    }else{
-      $erreurs[] = "L'état actuel du ticket ne permet pas sa prise en charge.";      
     }
     return ($this->etat == self::PRIS_EN_CHARGE);
   }
@@ -252,6 +250,7 @@ class Ticket{
           WHERE tkt_id = :id',
         array('id' => $this->id)
       );
+      $this->chargeDonnees();			
     }else{
       $erreurs[] = "La demande doit d'abbord être prise en charge avant de pouvoir être clôturée.";
     }

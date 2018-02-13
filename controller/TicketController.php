@@ -8,6 +8,7 @@ if(is_null(getSessionValue('user_id'))){
   exit;
 }
 
+$ticket = null;
 $action = getValue('a');
 
 switch($action){
@@ -18,14 +19,17 @@ switch($action){
   // Enregistrer un ticket
   case 'inscrit' :  
   case 'mod' :  
-    
-    $t = enregistrerTicket();
-    if($t){
-      
-    }else{
-      ticketVueAfficheForm($t);
+		// Modifie le ticket et vérifie que tout s'est bien passée
+		switch(enregistrerTicket()){
+			// Problème de saisie
+			case -1 :
+				ticketVueAfficheForm($ticket);
+			// Problème de droit d'accès ou si tout s'est bien passé, retour à la liste
+			case -2:
+			default:
+				vueParDefaut();
     }
-    break;
+		break;
   // Prendre en charge un ticket
   case 'pec' : 
     actionPECTicket();
@@ -44,7 +48,22 @@ switch($action){
     break;
   // TODO Clore le ticket
   case 'clore' :
-    cloreTicket();
+		switch(enregistrerTicket()){
+			// Problème de saisie
+			case -1 :
+				ticketVueAfficheForm($ticket);
+				break;
+			// Problème de droit d'accès
+			case -2 :
+				vueParDefaut();
+				break;
+			// si tout s'est bien passé, on peut procéder au changement d'état du ticket
+			case 1 : 
+				if($ticket->clore())
+					vueParDefaut();
+				else
+					ticketVueAfficheForm($ticket);
+    }
   // TODO Lister les tickets d'un utilisateur
   case 'vuser' : 
   default :
@@ -52,7 +71,7 @@ switch($action){
     exit;
 }
 
-// TODO Clore le ticket
+// Clore le ticket
 function cloreTicket(){
   
 }
@@ -60,15 +79,15 @@ function cloreTicket(){
 /**
  * Effectue l'ajout et la mise à jour d'un ticket
  * en ayant pris soin de vérifier les éléments saisis
- * @return Ticket Renvoie le ticket créé / modifié en cas de succès,
- * et false en cas d'erreur.
+ * @return <ul><li>1 en cas de succès</li><li>-1 en cas d'erreur de saisie</li>
+ * <li>-2 en cas de problème de droit d'accès</li></ul>
  **/
 function enregistrerTicket(){
-  global $erreurs, $champsErreur, $messages;
+  global $ticket, $erreurs, $champsErreur, $messages;
   
-  $ticket = new Ticket(
-    $id = getValue('id')
-  );
+  $id = getValue('id');
+	$ticket = new Ticket($id);
+	
   // S'il s'agit de la modification d'un ticket existant
   if($ticket->existe()){
     // Vérifier que l'utilisateur a bien le droit de modifier ce ticket
@@ -82,7 +101,7 @@ function enregistrerTicket(){
     // Puis effectue la vérification des autres champs. Ces champs ne peuvent
     // être modifiés que si l'utilisateur est le technicien en charge du ticket.
     // Sinon, ils sont simplement ignorés.
-    if(estTechnicien() && $ticket->getTechnicien() == getSessionValue("user_id")){
+    if($ticket->verifieDroitsModif(getSessionValue("user_id"), getSessionValue('user_role'))){
       $impact = getValue('impact', 1);
       switch($impact){
         case 1:
@@ -210,19 +229,16 @@ function actionPECTicket(){
     listeTicketsUtilisateur();
   }else{
     $id = getValue('id');
-    switch(prendEnChargeTicket($id, getSessionValue('user_id'))){
-      case -1 : 
-        $erreurs[] = "Ticket $id non trouvé";
-        vueParDefaut();
-        break;
-      case -2 :
-        $messages[] = "Ce ticket a déjà été pris en compte";
-        voirModifTicket();
-        break;
-      default :     
-        $messages[]= "Ticket $id pris en charge.";
-        voirModifTicket();
-    }
+		$ticket = new Ticket($id);
+		if(!$ticket->existe()){
+			$erreurs[] = "Ticket $id non trouvé";
+			vueParDefaut();			
+		}
+    if($ticket->prendreEnCharge(getSessionValue('user_id'))){
+			$messages[]= "Ticket $id pris en charge.";
+		}else
+			$erreurs[] = "Ce ticket a déjà été pris en charge";
+		ticketVueAfficheForm($ticket);
   }
 }
 
