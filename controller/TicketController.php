@@ -64,6 +64,7 @@ switch($action){
 				else
 					ticketVueAfficheForm($ticket);
     }
+    break;
   // TODO Lister les tickets d'un utilisateur
   case 'vuser' : 
   default :

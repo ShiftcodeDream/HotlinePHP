@@ -221,7 +221,7 @@ class Ticket{
     global $erreurs;
     if(!empty($this->id) && ($this->etat == self::SOUMIS)){
       dbExecute(
-        'UPDATE Ticket SET tkt_etat = ' . self::PRIS_EN_CHARGE .'
+        'UPDATE Ticket SET tkt_etat = ' . self::PRIS_EN_CHARGE .',
         tkt_date_pec = now(), tkt_technicien = :technicien
         WHERE tkt_id = :id',
         array(
@@ -243,16 +243,23 @@ class Ticket{
     // Enregistre toutes les valeurs modifiées dans la base avant de valider le changement
     // d'état du ticket
     $this->sauvegardeDonnees();
-    if(!empty($this->id) && ($this->etat == self::PRIS_EN_CHARGE)){
-      $dbExecute(
-        'UPDATE Ticket SET tkt_etat = ' . self::RESOLU. ',
-          tkt_date_solution = now()
-          WHERE tkt_id = :id',
-        array('id' => $this->id)
-      );
-      $this->chargeDonnees();			
-    }else{
-      $erreurs[] = "La demande doit d'abbord être prise en charge avant de pouvoir être clôturée.";
+    if(!empty($this->id)){
+      switch($this->etat){
+        case self::SOUMIS :
+          $erreurs[] = "La demande doit d'abbord être prise en charge avant de pouvoir être clôturée.";
+          return false;
+        case self::PRIS_EN_CHARGE :
+          dbExecute(
+            'UPDATE Ticket SET tkt_etat = ' . self::RESOLU. ',
+            tkt_date_solution = now()
+            WHERE tkt_id = :id',
+            array('id' => $this->id));
+          $this->chargeDonnees();
+          return ($this->etat == self::RESOLU);
+        case self::RESOLU :
+          $erreurs[] = "La demande est déjà clôturée";
+          return false;
+      }
     }
     return ($this->etat == self::RESOLU);
   }
@@ -282,12 +289,10 @@ class Ticket{
       case self::SOUMIS :
         // L'utilisateur peut modifier sa demande tant qu'elle n'a pas été prise en charge
         return ($this->demandeur == $user_id);
+      case self::RESOLU :
       case self::PRIS_EN_CHARGE :
         // Seul le technicien en charge de la demande peut modifier la demande
         return (($this->technicien == $user_id) && ($user_role == 'tech'));
-      case self::RESOLU :
-        // On ne modifie pas une demande résolue (l'application ne gère pas la réouverture d'un ticket)
-        return false;
     }
   }
 
