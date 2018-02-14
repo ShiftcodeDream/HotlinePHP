@@ -63,10 +63,23 @@ nav h2{
   margin:0;
   font-size:28px;
   width:100%;
+  border-top: 1px solid DarkBlue;
   border-bottom: 1px solid DarkBlue;
   display:block;
   color: DarkBlue;
   text-align:center;
+}
+nav h3{
+  padding:3px 0;
+  margin:8px 0 0 0;
+  font-size:22px;
+  width:100%;
+  border-top: 1px solid DarkBlue;
+  border-bottom: 1px solid DarkBlue;
+  display:block;
+  color: DarkBlue;
+  text-align:center;
+  background-color:rgba(255,255,255,0.3);
 }
 nav h5{
   border-top:1px solid DarkBlue;

@@ -9,6 +9,11 @@ if(!isset($FrameworkOK)){
     <title>Hotline en PHP</title>
     <link rel="stylesheet" href="css/style.css" type="text/css">
   </head>
+  <script>
+    function about(){
+      alert("Application de gestion d'incidents\n\nAuteurs :\n  - Nawal\n  - Adrien\n  - Matthias");
+    }
+  </script>
   <body>
   <?php if(getSessionValue('user_id') !== null){ ?>
     <nav>
@@ -21,6 +26,19 @@ if(!isset($FrameworkOK)){
         <li><a href="index.php?c=ticket&a=vtech">Tickets dont j'ai la charge</a></li>
         <li><a href="index.php?c=ticket&a=vall">Voir tous les tickets</a></li>
     <?php } ?>
+      </ul>
+    <?php if(estTechnicien()){ ?>
+      <h3>Statistiques</h3>
+      <ul>
+        <li><a href="index.php?c=stats&v=par_user">Demandes par utilisateur</a></li>
+        <li><a href="index.php?c=stats&v=par_mois">Demandes par mois</a></li>
+        <li><a href="index.php?c=stats&v=par_impact">Résolution par importance</a></li>
+        <li><a href="index.php?c=stats&v=nb_impact">Demandes par importance</a></li>
+      </ul>
+    <?php } ?>
+      <h3>Divers</h3>
+      <ul>
+        <li><a href="#" onclick="about()">A propos</a></li>
         <li><a href="index.php?c=userauth&a=logoff">Déconnexion</a></li>
       </ul>
       <h5>Utilisateur <?=getSessionValue('user_name')?> (<?=getLibelleRole()?>)</h5>

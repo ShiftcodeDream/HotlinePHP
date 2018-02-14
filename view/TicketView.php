@@ -159,8 +159,12 @@ function ticketVueAfficheForm($o = null, $readOnly = false){
     </tr>
 <?php    
   }
+if($o->existe()){
+  echo "<tr><td colspan='2' class='infosTickets'>Numéro de ticket : ", $o->getId(), "</td></tr>";
+}else{
+  echo "<tr><td colspan='2' class='infosTickets'>Nouveau ticket</td></tr>";
+}
 ?>
-		<tr><td colspan='2' class='infosTickets'>Numéro de ticket : <?= $o->getId() ?></td></tr> 
 </table>
 </form>
 
