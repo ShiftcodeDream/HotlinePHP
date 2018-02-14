@@ -23,7 +23,7 @@ body{
 }
 /* Pour mettre en évidence un champ en erreur */
 .fielderror{
-  border: 2px solid orange;
+  background-color: #efb8a0;
 }
 .loginform{
   position: absolute;
@@ -82,7 +82,7 @@ nav ul{
 }
 nav ul li a{
   text-decoration:none;
-  font-size: 22px;
+  font-size: 20px;
   font-weight:bold;
   color:#2b2bb9;
   padding:7px;
@@ -129,4 +129,9 @@ table.liste tbody tr:hover{
 }
 table.liste tbody tr:nth-of-type(2n+1){
   background-color: #ddf;
+}
+.infosTickets{
+	text-align:right;
+	font-size:12px;
+	font-style:italic;
 }

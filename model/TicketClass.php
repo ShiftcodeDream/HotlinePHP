@@ -243,6 +243,12 @@ class Ticket{
           $erreurs[] = "La demande doit d'abbord être prise en charge avant de pouvoir être clôturée.";
           return false;
         case self::PRIS_EN_CHARGE :
+					if(empty($this->temps_passe))
+						$erreurs[] = "Le temps passé n'est pas renseigné";
+					if(strlen(trim($this->solution)) ==0)
+						$erreurs[] = "Pour clore un ticket, il faut lui donner une solution";
+					if(!empty($erreurs))
+						return false;
           dbExecute(
             'UPDATE Ticket SET tkt_etat = ' . self::RESOLU. ',
             tkt_date_solution = now()
@@ -283,10 +289,12 @@ class Ticket{
       case self::SOUMIS :
         // L'utilisateur peut modifier sa demande tant qu'elle n'a pas été prise en charge
         return ($this->demandeur == $user_id);
-      case self::RESOLU :
       case self::PRIS_EN_CHARGE :
         // Seul le technicien en charge de la demande peut modifier la demande
         return (($this->technicien == $user_id) && ($user_role == 'tech'));
+      // Une fois résolu, plus personne ne peut modifier un ticket.
+			case self::RESOLU :
+				return false;
     }
   }
 

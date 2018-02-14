@@ -1,7 +1,13 @@
 <?php
 
-
-function ticketVueAfficheForm($o = null){
+/**
+ * Affiche le formulaire de tickets
+ * @param ticket le ticket à afficher. Si null, fournit le formulaire vierge
+ * pour créer un nouveau ticket.
+ * @param readOnly boolean true si le formulaire doit s'afficher en lecture seuls
+ * (pas de modification permise)
+ **/
+function ticketVueAfficheForm($o = null, $readOnly = false){
   global $erreurs, $champsErreur, $messages;
   include "view/header.php";
   // Définit si le ticket a été créé ou s'il s'agit d'un nouveau ticket
@@ -10,9 +16,10 @@ function ticketVueAfficheForm($o = null){
   }
   $existe = $o->existe();
   $id = $o->getId();
+	$ro = $readOnly ? 'readonly' : '';
   
   if($existe){
-    $action = 'index.php?c=ticket&a=mod&id=' . $id;
+    $action = 'index.php?c=ticket&id=' . $id;
     $action_texte = 'Enregistrer';
   }else{
     $action = 'index.php?c=ticket&a=inscrit';
@@ -21,12 +28,23 @@ function ticketVueAfficheForm($o = null){
   
   echo "<form name='ticket' action='$action' method='post'>";
   echo '<h1>', $existe ? "Détails du" : "Création d'un" 
-    , " ticket au nom de "
+    , " ticket soumis par "
     , $existe ? $o->getDemandeurNom() : getSessionValue('user_name', 'inconnu')
     , '</h1>';    
-?>
+?><input type="hidden" name="a" id="a" value="mod"/>
   <input type="button" value="Retour" onclick="document.location='index.php'">
+<?php if(!$readOnly){ ?>
   <input type="submit" value="<?=$action_texte?>">
+<?php } ?>
+	<script>
+		function clore(){
+			e = document.getElementById("a");
+			if(e !== null){
+				e.value = 'clore';
+				document.forms[0].submit();
+			}
+		}
+</script>
 <?php
   if($existe && estTechnicien()){
     if($o->estSoumis()){
@@ -36,9 +54,7 @@ function ticketVueAfficheForm($o = null){
     }
     if($o->estPrisEnCharge()){
       echo '<input type="button"
-      onClick="document.location=\'index.php?c=ticket&a=clore&id='
-      , $id
-      , '\'" value="Clore le ticket">';
+      onClick="clore()" value="Clore le ticket">';
     }
   }
 ?>
@@ -53,11 +69,11 @@ function ticketVueAfficheForm($o = null){
 ?>
     <tr>
       <td><label for="titre" class="obligatoire">Titre</label></td>
-      <td><input type="text" id="titre" name="titre" value="<?=$o->getTitre()?>" size="80"></td>
+      <td><input type="text" id="titre" name="titre" value="<?=$o->getTitre()?>" size="80" <?=$ro?>></td>
     </tr>
     <tr>
       <td><label for="description" class="obligatoire">Description</label></td>
-      <td><textarea id="description" name="description" cols="80" rows="10"><?=$o->getDescription()?></textarea>
+      <td><textarea id="description" name="description" cols="80" rows="10" <?=$ro?>><?=$o->getDescription()?></textarea>
       </td>
     </tr>
 <?php
@@ -81,7 +97,7 @@ function ticketVueAfficheForm($o = null){
     <tr>
       <td><label for="urgence">Urgence</label></td>
       <td>
-        <select name="urgence" id="urgence">
+        <select name="urgence" id="urgence" <?=$ro?>>
           <option <?=optionSelection($urgence, 1)?>>pas du tout</option>
           <option <?=optionSelection($urgence, 2)?>>un peu</option>
           <option <?=optionSelection($urgence, 3)?>>moyenne</option>
@@ -94,7 +110,7 @@ function ticketVueAfficheForm($o = null){
     <tr>
       <td><label for="impact">Impact global</label></td>
       <td>
-        <select name="impact" id="impact" <?=d(estTechnicien())?>>
+        <select name="impact" id="impact" <?=d(estTechnicien())?> <?=$ro?>>
           <option <?=optionSelection($impact, 1)?>>aucun</option>
           <option <?=optionSelection($impact, 2)?>>faible</option>
           <option <?=optionSelection($impact, 3)?>>moyen</option>
@@ -133,18 +149,18 @@ function ticketVueAfficheForm($o = null){
       <td>
         <input type="text" id="temps" name="temps" size="5"
           value="<?=$o->getTempsPasse()==0 ? '' : $o->getTempsPasse()?>"
-          <?=d($modifOK)?> > (en minutes)
+          <?=d($modifOK)?>  <?=$ro?>> (en minutes)
       </td>
     </tr>
     <tr>
       <td><label for="solution">Solution proposée</label></td>
-      <td><textarea name="solution" id="solution" cols="80" rows="10" <?=d($modifOK)?> ><?=$o->getSolution()?></textarea>
+      <td><textarea name="solution" id="solution" cols="80" rows="10" <?=d($modifOK)?>  <?=$ro?>><?=$o->getSolution()?></textarea>
       </td>
     </tr>
 <?php    
   }
 ?>
-    
+		<tr><td colspan='2' class='infosTickets'>Numéro de ticket : <?= $o->getId() ?></td></tr> 
 </table>
 </form>
 
@@ -234,7 +250,8 @@ function afficheListeTousTickets($liste){
     return;
   }
 	
-  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Etat', 'Technicien affecté', 'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
+  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Etat', 'Technicien affecté',
+		'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
   
   foreach($liste as $donnee){
     $uri = $action . $donnee['tkt_id'];

@@ -23,7 +23,7 @@ switch($action){
 		switch(enregistrerTicket()){
 			// Problème de saisie
 			case -1 :
-				ticketVueAfficheForm($ticket);
+				ticketVueAfficheForm($ticket, !$ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role')));
 			// Problème de droit d'accès ou si tout s'est bien passé, retour à la liste
 			case -2:
 			default:
@@ -42,29 +42,13 @@ switch($action){
   case 'vatrait' :  
     vueParDefaut();
     break;
-  // TODO Lister les tickets affectés à un technicien
+  // Lister les tickets affectés à un technicien
   case 'vtech' : 
     listeTicketsDuTechnicien();
     break;
-  // TODO Clore le ticket
+  // Clore le ticket
   case 'clore' :
-		// Tente d'enregistrer le formulaire
-		switch(enregistrerTicket()){
-			// Problème de saisie
-			case -1 :
-				ticketVueAfficheForm($ticket);
-				break;
-			// Problème de droit d'accès
-			case -2 :
-				vueParDefaut();
-				break;
-			// si tout s'est bien passé, on peut procéder au changement d'état du ticket
-			case 1 : 
-				if($ticket->clore())
-					vueParDefaut();
-				else
-					ticketVueAfficheForm($ticket);
-    }
+		cloreUnTicket();
     break;
 	// Liste tous les tickets
 	case 'vall':
@@ -133,7 +117,7 @@ function enregistrerTicket(){
 				$ticket->setTempsPasse($temps);
 			}
 		} // Fin si technicien en charge du ticket
-			
+
     // Si tout est OK, on enregistre le ticket
     if(empty($erreurs))
       return $ticket->sauvegardeDonnees() ? 1 : -1;
@@ -209,7 +193,7 @@ function voirModifTicket(){
     $erreurs[] = "Vous ne pouvez modifier que vos propres tickets.";
     listeTicketsUtilisateur();    
   }else{
-    ticketVueAfficheForm($ticket);
+    ticketVueAfficheForm($ticket, !$ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role')));
   }
 }
 
@@ -261,7 +245,7 @@ function actionPECTicket(){
 			$messages[]= "Ticket $id pris en charge.";
 		}else
 			$erreurs[] = "Ce ticket a déjà été pris en charge";
-		ticketVueAfficheForm($ticket);
+		ticketVueAfficheForm($ticket, !$ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role')));
   }
 }
 
@@ -275,4 +259,27 @@ function vueParDefaut(){
     listeTicketsUtilisateur();
 }
 
+function cloreUnTicket(){
+	global $ticket, $erreurs, $messages;
+	// Tente d'enregistrer le formulaire
+	switch(enregistrerTicket()){
+		// Problème de saisie
+		case -1 :
+			ticketVueAfficheForm($ticket, !$ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role')));
+			break;
+		// Problème de droit d'accès
+		case -2 :
+			vueParDefaut();
+			break;
+		// si tout s'est bien passé, on peut tenter de clore le ticket. La classe vérifie elle-même
+		// qu'elle a bien les informlations nécessaires pour clore le ticket.
+		case 1 : 
+			if($ticket->clore()){
+				$messages[] = "Ticket " . $ticket->getId() . " clôturé avec succès";
+				vueParDefaut();
+			}
+			else
+				ticketVueAfficheForm($ticket, !$ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role')));
+	}
+}
 ?>
