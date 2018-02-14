@@ -47,7 +47,7 @@ function ticketVueAfficheForm($o = null){
 <?php
   if($existe){
     echo '<tr><td><label>Etat du ticket</label></td><td>',
-      ucfirst($o->getLibelleEtat()),
+      ucfirst(Ticket::getLibelleEtat($o->getEtat())),
       '</td></tr>';
   }
 ?>
@@ -158,10 +158,6 @@ include "view/footer.php";
 /*
  * Affiche une vue de tickets
  * @param liste tickets à afficher
- * @param action string uri à appeler lorsque la personne clique sur le lien. Est rajouté à la fin de l'uri l'identifiant du ticket
- * @param champs array table associative contenant en clé le nom du champ à afficher et en valeur le libellé de la colonne.
- * @param champIndex string le nom du champ qui contient l'identifiant unique du ticket.
- * @param titre string titre de la vue à afficher
  */
 function afficheListeTicketsATraiter($liste){
   global $erreurs, $messages;
@@ -192,10 +188,111 @@ function afficheListeTicketsATraiter($liste){
   include "view/footer.php";
 }
 
+/**
+ * Affiche les tickets d'un utilisateur avec l'éatt de ses demandes
+ **/
+function afficheListeTicketsUtilisateur($liste){
+  global $erreurs, $messages;
+  $action = 'index.php?c=ticket&a=visu&id=';
+  
+  include "view/header.php";
+  echo "<h1>Liste de vos demandes</h1>\n";
+
+  if(empty($liste)){
+  echo "<h1>Liste des demandes de " . getSessionValue('user_name') . "</h1>\n";
+    return;
+  }
+	
+  enteteTableau(array('Titre', 'Urgence', 'Etat', 'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
+  
+  foreach($liste as $donnee){
+    $uri = $action . $donnee['tkt_id'];
+?>
+    <tr onclick="document.location='<?=$uri?>'">
+      <td><?= $donnee['tkt_titre'] ?></td>
+      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
+			<td><?= Ticket::getLibelleEtat($donnee['tkt_etat']) ?></td>
+      <td><?= formateDateHeure($donnee['tkt_date_demande']) ?></td>
+      <td><?= formateDateHeure($donnee['tkt_date_pec']) ?></td>
+      <td><?= formateDateHeure($donnee['tkt_date_solution']) ?></td>
+    </tr>
+<?php
+  }
+  echo "</tbody></table>";
+  include "view/footer.php";	
+}
+
+function afficheListeTousTickets($liste){
+  global $erreurs, $messages;
+  $action = 'index.php?c=ticket&a=visu&id=';
+  
+  include "view/header.php";
+  echo "<h1>Liste de toutes les demandes</h1>\n";
+
+  if(empty($liste)){
+    echo "<p>Liste vide pour le moment.</p>\n";
+    return;
+  }
+	
+  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Etat', 'Technicien affecté', 'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
+  
+  foreach($liste as $donnee){
+    $uri = $action . $donnee['tkt_id'];
+?>
+    <tr onclick="document.location='<?=$uri?>'">
+      <td><?= $donnee['tkt_titre'] ?></td>
+      <td><?= $donnee['tkt_demandeur_nom'] ?></td>
+      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
+			<td><?= ucfirst(Ticket::getLibelleEtat($donnee['tkt_etat'])) ?></td>
+      <td><?= $donnee['tkt_technicien_nom'] ?></td>
+      <td><?= formateDateHeure($donnee['tkt_date_demande']) ?></td>
+      <td><?= formateDateHeure($donnee['tkt_date_pec']) ?></td>
+      <td><?= formateDateHeure($donnee['tkt_date_solution']) ?></td>
+    </tr>
+<?php
+  }
+  echo "</tbody></table>";
+  include "view/footer.php";	
+}
+/*
+ * Affiche une vue de tickets
+ * @param liste tickets à afficher
+ */
+function afficheListeTicketsTechnicien($liste){
+  global $erreurs, $messages;
+  $action = 'index.php?c=ticket&a=visu&id=';
+  
+  include "view/header.php";
+  echo "<h1>Liste des tickets pris en charge par " . getSessionValue('user_name') . "</h1>\n";
+
+  if(empty($liste)){
+    echo "<p>Liste vide pour le moment.</p>\n";
+    return;
+  }
+  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Date de la demande', 'Heure de la demande'));
+  
+  foreach($liste as $donnee){
+    $uri = $action . $donnee['tkt_id'];
+?>
+    <tr onclick="document.location='<?=$uri?>'">
+      <td><?= $donnee['tkt_titre'] ?></td>
+      <td><?= $donnee['tkt_demandeur_nom'] ?></td>
+      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
+      <td><?= formateDate($donnee['tkt_date_demande']) ?></td>
+      <td><?= formateHeure($donnee['tkt_date_demande']) ?></td>
+    </tr>
+<?php
+  }
+  echo "</tbody></table>";
+  include "view/footer.php";
+}
 function enteteTableau($titres){
   echo "<table class='liste'><thead><tr>\n";
   foreach($titres as $titre){
-    echo "<th>$titre</th>";
+		if($titre === 'Titre')
+			echo "<th width='25%'>$titre</th>";
+		else
+    	echo "<th>$titre</th>";
   }
   echo "</tr></thead>\n<tbody>\n";  
 }

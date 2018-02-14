@@ -48,6 +48,7 @@ switch($action){
     break;
   // TODO Clore le ticket
   case 'clore' :
+		// Tente d'enregistrer le formulaire
 		switch(enregistrerTicket()){
 			// Problème de saisie
 			case -1 :
@@ -65,16 +66,15 @@ switch($action){
 					ticketVueAfficheForm($ticket);
     }
     break;
-  // TODO Lister les tickets d'un utilisateur
+	// Liste tous les tickets
+	case 'vall':
+		listeTousTickets();
+		break;
+  // Lister les tickets d'un utilisateur
   case 'vuser' : 
   default :
-    vueParDefaut();
+    listeTicketsUtilisateur();
     exit;
-}
-
-// Clore le ticket
-function cloreTicket(){
-  
 }
 
 /**
@@ -93,49 +93,52 @@ function enregistrerTicket(){
   if($ticket->existe()){
     // Vérifier que l'utilisateur a bien le droit de modifier ce ticket
     if(! $ticket->verifieDroitsModif(getSessionValue('user_id'), getSessionValue('user_role'))){
-      $erreurs[] = "Vous n'êtes pas le demandeur de ce ticket, vous ne pouvez pas le modifier.";
-      vueParDefaut();
-      return;
+			$erreurs[] = "Vous ne pouvez modifier que vos propres tickets, à condition que votre demande n'est pas déjà prise en charge par un technicien.";
+      return -2;
     }
     // Commence par valider les champs vérifiés lors de la création
+    $ticket->setTitre(htmlentities(trim(getValue('titre'))));
+    $ticket->setDescription(htmlentities(trim(getValue('description'))));
+    $ticket->setUrgence(getValue('urgence'));
     verifieChampsDeBase($ticket);
+		
     // Puis effectue la vérification des autres champs. Ces champs ne peuvent
     // être modifiés que si l'utilisateur est le technicien en charge du ticket.
     // Sinon, ils sont simplement ignorés.
-    if($ticket->verifieDroitsModif(getSessionValue("user_id"), getSessionValue('user_role'))){
-      $impact = getValue('impact', 1);
-      switch($impact){
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-          break;
-        default :
-          $impact = 1;
-      }
-      $ticket->setImpact($impact);
-      
-      // Enregistre la solution apportée
-      // Elle ne sera validée que lorsque le technicien voudra clore le ticket
-      // En attendant la clôture, la solution peut être vide.
-      $ticket->setSolution(htmlentities(trim(getValue('solution', ''))));
-      
-      // Enregistre le temps passé
-      // Doit être numérique
-      $temps = getValue('temps', '');
-      if(!isset($temps) && !is_numeric($temps)){
-        $erreurs[] = "Vous devez saisir une valeur numérique pour le temps passé.";
-        $champsErreur[] = "temps";
-      }else{
-        $ticket->setTempsPasse($temps);
-      }
-    } // Fin si est technicien en charge du ticket en cours
-    
+		if(estTechnicien() && $ticket->getTechnicien() == getSessionValue('user_id')){
+			$impact = getValue('impact', 1);
+			switch($impact){
+				case 1:
+				case 2:
+				case 3:
+				case 4:
+					break;
+				default :
+					$impact = 1;
+			}
+			$ticket->setImpact($impact);
+
+			// Enregistre la solution apportée
+			// Elle ne sera validée que lorsque le technicien voudra clore le ticket
+			// En attendant la clôture, la solution peut être vide.
+			$ticket->setSolution(htmlentities(trim(getValue('solution', ''))));
+
+			// Enregistre le temps passé
+			// Doit être numérique
+			$temps = getValue('temps', '');
+			if(!isset($temps) && !is_numeric($temps)){
+				$erreurs[] = "Vous devez saisir une valeur numérique pour le temps passé.";
+				$champsErreur[] = "temps";
+			}else{
+				$ticket->setTempsPasse($temps);
+			}
+		} // Fin si technicien en charge du ticket
+			
     // Si tout est OK, on enregistre le ticket
     if(empty($erreurs))
-      return $ticket->sauvegardeDonnees();
+      return $ticket->sauvegardeDonnees() ? 1 : -1;
     else
-      return false;
+      return -1;
 
   }else{
     // Création d'un nounveau ticket 
@@ -145,13 +148,15 @@ function enregistrerTicket(){
     if(verifieChampsDeBase($ticket)){
       $ticket->setDemandeur(getSessionValue('user_id'));
       $id = $ticket->sauvegardeDonnees();
-      if(!empty($id))
+      if(!empty($id)){
         $messages[] = "Demande n° " . $ticket->getId() . " soumise avec succès.";
-      else
+				return 1;
+			}else{
         $erreurs[] = "Une erreur s'est produite lors de la création du ticket...";
-      return $id;
+				return -1;
+			}
     }else{
-      return false;
+      return -1;
     }
   }
 }
@@ -209,18 +214,35 @@ function voirModifTicket(){
 }
 
 function listeTicketsATraiter(){
-  $liste = Ticket::getList('vatrait', null);
-  afficheListeTicketsATraiter($liste);
+	if(estTechnicien()){
+		$liste = Ticket::getList('vatrait');
+  	afficheListeTicketsATraiter($liste);
+	}else{
+		listeTicketsUtilisateur();
+	}
 }
 
 function listeTicketsDuTechnicien(){
-  affichageTemporaire("Lister les tickets du technicien");
+	if(estTechnicien()){
+		$liste = Ticket::getList('vtech', array('user_id' => getSessionValue('user_id')));
+  	afficheListeTicketsTechnicien($liste);
+	}else{
+		listeTicketsUtilisateur();
+	}
 }
 
 function listeTicketsUtilisateur(){
-  include_once "view/header.php";
-  affichageTemporaire("Lister les tickets de l'utilisateur");
-  include_once "view/header.php";
+  $liste = Ticket::getList('vuser', array('user_id' => getSessionValue('user_id')));
+  afficheListeTicketsUtilisateur($liste);
+}
+
+function listeTousTickets(){
+	if(estTechnicien()){
+		$liste = Ticket::getList('vall');
+		afficheListeTousTickets($liste);
+	}else{
+		listeTicketsUtilisateur();
+	}
 }
 
 function actionPECTicket(){

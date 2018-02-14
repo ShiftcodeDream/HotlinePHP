@@ -10,14 +10,7 @@ class Ticket{
   const SOUMIS = 0;
   const PRIS_EN_CHARGE = 1;
   const RESOLU = 2;
-  
-	// Les constantes de classe n'admettent les tableaux qu'à partir de la version 5.6
-	protected $libelleEtat = [
-    self::SOUMIS => 'soumis',
-    self::PRIS_EN_CHARGE => 'pris en charge',
-    self::RESOLU => 'résolu'
-  ];
-  
+    
   protected $id = 0;
   protected $titre ='';
   protected $description = '';
@@ -39,6 +32,7 @@ class Ticket{
     'vuser'   => 'SELECT * FROM TicketAll WHERE tkt_demandeur = :user_id',
     'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat = 0',
     'vtech'   => 'SELECT * FROM TicketAll WHERE tkt_technicien = :user_id',
+		'vall'    => 'SELECT * FROM TicketAll'
   ];
   /** Le constructeur. Si l'id est renseigné et non égal à 0,
    * remplit les attributs de la classe avec les valeurs trouvées en base de données
@@ -269,7 +263,7 @@ class Ticket{
    * @param nom_liste string nom de la requete à appeler
    * @param params array tableau de paramètres pour la requete sélectionnee
    **/
-  public static function getList($nom_liste, $params){
+  public static function getList($nom_liste, $params = null){
     if(!array_key_exists($nom_liste, self::$requetes))
       return array();
     return dbSelect(self::$requetes[$nom_liste], $params);
@@ -339,13 +333,19 @@ class Ticket{
   /**
    * @return string libellé d'un état d'une demande
    **/
-  public function getLibelleEtat(){
-    if(! $this->existe())
-      return 'non créé';
-    if(!array_key_exists($this->etat, $this->libelleEtat))
-      return 'inconnu';
-    return $this->libelleEtat[$this->etat];
+  public static function getLibelleEtat($etat){
+		switch($etat){
+			case self::SOUMIS :
+				return 'soumis';
+			case self::PRIS_EN_CHARGE :
+				return 'pris en charge';
+			case self::RESOLU :
+				return 'résolu';
+			default :
+				return 'non créé';
+		}
   }
+	
   /**
    * @param $urgence int degré d'urgence
    * @return string Libellé de l'urgence

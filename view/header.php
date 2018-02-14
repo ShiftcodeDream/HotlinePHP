@@ -14,12 +14,12 @@ if(!isset($FrameworkOK)){
     <nav>
       <h2>Menu</h2>
       <ul>
-        <li><a href="index.php?c=ticket&a=new">Nouveau Ticket</a></li>
-        <li><a href="index.php?c=ticket&a=vuser">Voir mes Tickets</a></li>
+        <li><a href="index.php?c=ticket&a=new">Nouvelle demande</a></li>
+        <li><a href="index.php?c=ticket&a=vuser">Voir mes demandes</a></li>
     <?php if(estTechnicien()){ ?>
         <li><a href="index.php?c=ticket&a=vatrait">Tickets à traiter</a></li>
         <li><a href="index.php?c=ticket&a=vtech">Tickets dont j'ai la charge</a></li>
-        <li><a href="index.php?c=user&a=new">Nouvel utilisateur</a></li>
+        <li><a href="index.php?c=ticket&a=vall">Voir tous les tickets</a></li>
     <?php } ?>
         <li><a href="index.php?c=userauth&a=logoff">Déconnexion</a></li>
       </ul>
