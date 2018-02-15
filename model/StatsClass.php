@@ -10,13 +10,16 @@ class Stats{
   // Requetes utilisées par les différentes listes
   protected static $requetes = [
     // nombre de demandes par utilisateur
-    'par_user'   => 'SELECT tkt_demandeur_nom as Demandeur, count(*) as `Nombre de demandes` FROM TicketAll',
+    'par_user'   => 'SELECT tkt_demandeur_nom as Demandeur,
+    count(*) as `Nombre de demandes` FROM TicketAll',
     // nombre de demandes par mois
     'par_mois'   => 'TODO',
     // moyenne du temps de résoluttion par importance
-    'par_impact' => 'SELECT :champ, avg(tkt_temps_passe) as `Temps passé moyen` FROM Ticket WHERE tkt_etat=2 GROUP BY :champ',
+    'par_impact' => 'SELECT imp_nom as `importance (impact)`,
+    avg(tkt_temps_passe) as `Temps passé moyen en minutes`
+    FROM TicketAll WHERE tkt_etat=2 GROUP BY imp_nom',
     // nombre de demandes par importance
-		'nb_impact'  => 'SELECT :champ, count(*) FROM Ticket GROUP BY :champ'
+		'nb_impact'  => 'SELECT imp_nom as `importance (impact)`, count(*) as `Nombre de demandes` FROM TicketAll GROUP BY imp_nom'
   ];
 
   /**

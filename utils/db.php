@@ -24,7 +24,7 @@ function dbSelect($sql, $params){
 
 	$requete = $db->prepare($sql);
   $requete->execute($params);
-  $reponse = $requete->fetchAll();
+  $reponse = $requete->fetchAll(PDO::FETCH_ASSOC);
   $requete->closeCursor();
   
   return empty($reponse) ? null : $reponse;

@@ -48,7 +48,7 @@ function listeParMois(){
  * par importance
  **/
 function listeParImpact(){
-   $l = Stats::getList('par_impact', array('champ' => 'tkt_impact'));
+   $l = Stats::getList('par_impact');
    afficheStatistiqueSimples($l, "Moyenne du temps de résolution par importance");  
 }
 

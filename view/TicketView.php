@@ -190,7 +190,7 @@ function afficheListeTicketsATraiter($liste){
     echo "<p>Liste vide pour le moment.</p>\n";
     return;
   }
-  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Date de la demande', 'Heure de la demande'));
+  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Etat', 'Date de la demande', 'Heure de la demande', 'Technicien'));
   
   foreach($liste as $donnee){
     $uri = $action . $donnee['tkt_id'];
@@ -198,9 +198,11 @@ function afficheListeTicketsATraiter($liste){
     <tr onclick="document.location='<?=$uri?>'">
       <td><?= $donnee['tkt_titre'] ?></td>
       <td><?= $donnee['tkt_demandeur_nom'] ?></td>
-      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
+      <td><?= $donnee['urg_nom'] ?></td>
+      <td><?= $donnee['etat_nom'] ?></td>
       <td><?= formateDate($donnee['tkt_date_demande']) ?></td>
       <td><?= formateHeure($donnee['tkt_date_demande']) ?></td>
+      <td><?= $donnee['tkt_technicien_nom'] ?></td>
     </tr>
 <?php
   }
@@ -230,8 +232,8 @@ function afficheListeTicketsUtilisateur($liste){
 ?>
     <tr onclick="document.location='<?=$uri?>'">
       <td><?= $donnee['tkt_titre'] ?></td>
-      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
-			<td><?= Ticket::getLibelleEtat($donnee['tkt_etat']) ?></td>
+      <td><?= $donnee['urg_nom'] ?></td>
+			<td><?= $donnee['etat_nom'] ?></td>
       <td><?= formateDateHeure($donnee['tkt_date_demande']) ?></td>
       <td><?= formateDateHeure($donnee['tkt_date_pec']) ?></td>
       <td><?= formateDateHeure($donnee['tkt_date_solution']) ?></td>
@@ -263,8 +265,8 @@ function afficheListeTousTickets($liste){
     <tr onclick="document.location='<?=$uri?>'">
       <td><?= $donnee['tkt_titre'] ?></td>
       <td><?= $donnee['tkt_demandeur_nom'] ?></td>
-      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
-			<td><?= ucfirst(Ticket::getLibelleEtat($donnee['tkt_etat'])) ?></td>
+      <td><?= $donnee['urg_nom'] ?></td>
+			<td><?= $donnee['etat_nom'] ?></td>
       <td><?= $donnee['tkt_technicien_nom'] ?></td>
       <td><?= formateDateHeure($donnee['tkt_date_demande']) ?></td>
       <td><?= formateDateHeure($donnee['tkt_date_pec']) ?></td>
@@ -298,7 +300,7 @@ function afficheListeTicketsTechnicien($liste){
     <tr onclick="document.location='<?=$uri?>'">
       <td><?= $donnee['tkt_titre'] ?></td>
       <td><?= $donnee['tkt_demandeur_nom'] ?></td>
-      <td><?= Ticket::getLibelleUrgence($donnee['tkt_urgence']) ?></td>
+      <td><?= $donnee['urg_nom'] ?></td>
       <td><?= formateDate($donnee['tkt_date_demande']) ?></td>
       <td><?= formateHeure($donnee['tkt_date_demande']) ?></td>
     </tr>
@@ -308,7 +310,7 @@ function afficheListeTicketsTechnicien($liste){
   include "view/footer.php";
 }
 function enteteTableau($titres){
-  echo "<table class='liste'><thead><tr>\n";
+  echo "<table class='liste avecLiens'><thead><tr>\n";
   foreach($titres as $titre){
 		if($titre === 'Titre')
 			echo "<th width='25%'>$titre</th>";

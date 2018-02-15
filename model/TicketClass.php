@@ -30,7 +30,7 @@ class Ticket{
   // Requetes utilisées par les différentes listes
   protected static $requetes = [
     'vuser'   => 'SELECT * FROM TicketAll WHERE tkt_demandeur = :user_id',
-    'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat = 0',
+    'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat < 2',
     'vtech'   => 'SELECT * FROM TicketAll WHERE tkt_technicien = :user_id',
 		'vall'    => 'SELECT * FROM TicketAll'
   ];
