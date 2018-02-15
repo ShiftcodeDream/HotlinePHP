@@ -2,16 +2,13 @@
 include "utils/misc.php";
 # Démarrage de la session, récupération des paramètres de session
 session_start();
-$user_id =   getSessionValue('user_id');
-$user_name = getSessionValue('user_name');
-$user_role = getSessionValue('user_role');
 
 $erreurs = array(); // Messages d'erreur à afficher 
 $champsErreur = array(); // Champ en erreur à mettre en évidence
 $messages = array(); // Messages d'information (exemple : "utilisateur créé")
 
 # L'utilisateur est-il authentifié?
-if(!isset($user_id)){
+if(is_null(getSessionValue('user_id'))){
   include "controller/UserAuthentificationController.php";
   exit();
 }else{
@@ -23,6 +20,9 @@ if(!isset($user_id)){
       break;
     case 'userauth' :
       include "controller/UserAuthentificationController.php";
+      break;
+    case 'stats' :
+      include "controller/StatsController.php";
       break;
     case 'ticket' :
     default :
