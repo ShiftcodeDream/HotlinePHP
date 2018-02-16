@@ -256,13 +256,14 @@ function afficheListeTousTickets($liste){
     return;
   }
 	
-  enteteTableau(array('Titre', 'Demandeur', 'Urgence', 'Etat', 'Technicien affecté',
+  enteteTableau(array('id','Titre', 'Demandeur', 'Urgence', 'Etat', 'Technicien affecté',
 		'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
   
   foreach($liste as $donnee){
     $uri = $action . $donnee['tkt_id'];
 ?>
     <tr onclick="document.location='<?=$uri?>'">
+      <td><?= $donnee['tkt_id'] ?></td>
       <td><?= $donnee['tkt_titre'] ?></td>
       <td><?= $donnee['tkt_demandeur_nom'] ?></td>
       <td><?= $donnee['urg_nom'] ?></td>

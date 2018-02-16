@@ -32,7 +32,7 @@ class Ticket{
     'vuser'   => 'SELECT * FROM TicketAll WHERE tkt_demandeur = :user_id',
     'vatrait' => 'SELECT * FROM TicketAll WHERE tkt_etat < 2',
     'vtech'   => 'SELECT * FROM TicketAll WHERE tkt_technicien = :user_id',
-		'vall'    => 'SELECT * FROM TicketAll'
+		'vall'    => 'SELECT * FROM TicketAll ORDER BY tkt_id'
   ];
   /** Le constructeur. Si l'id est renseigné et non égal à 0,
    * remplit les attributs de la classe avec les valeurs trouvées en base de données
@@ -75,7 +75,7 @@ class Ticket{
   **/
   public function sauvegardeDonnees(){
     // Cas d'un nouveau ticket
-    if(empty($this->id)){
+    if(empty($this->id)){      
       $this->id = dbInsert(
         'INSERT INTO Ticket
         (tkt_titre, tkt_description, tkt_urgence,
@@ -94,6 +94,7 @@ class Ticket{
       if($this->id){
         $this->chargeDonnees();
       }
+      
     }
     // Mise à jour d'un ticket existant
     else{

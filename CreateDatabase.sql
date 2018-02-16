@@ -66,11 +66,11 @@ SELECT t.*,
   CONCAT(te.usr_prenom, ' ', te.usr_nom) as tkt_technicien_nom,
   urg_nom, etat_nom, imp_nom
   FROM Ticket t
-  JOIN Utilisateur d ON d.usr_id = t.tkt_demandeur
-  JOIN Utilisateur te ON te.usr_id = t.tkt_technicien
-  JOIN LibelleUrgence lu ON lu.urg_id = t.tkt_urgence
-  JOIN LibelleEtat et ON et.etat_id = t.tkt_etat
-  JOIN LibelleImpact im ON im.imp_id = t.tkt_impact
+  LEFT JOIN Utilisateur d ON d.usr_id = t.tkt_demandeur
+  LEFT JOIN Utilisateur te ON te.usr_id = t.tkt_technicien
+  LEFT JOIN LibelleUrgence lu ON lu.urg_id = t.tkt_urgence
+  LEFT JOIN LibelleEtat et ON et.etat_id = t.tkt_etat
+  LEFT JOIN LibelleImpact im ON im.imp_id = t.tkt_impact;
 
 INSERT INTO Utilisateur
 (usr_nom, usr_prenom, usr_login, usr_passwd, usr_role)
