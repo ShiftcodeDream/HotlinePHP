@@ -13,13 +13,20 @@ class Stats{
     'par_user'   => 'SELECT tkt_demandeur_nom as Demandeur,
     count(*) as `Nombre de demandes` FROM TicketAll',
     // nombre de demandes par mois
-    'par_mois'   => 'TODO',
+    'par_mois'   => "SELECT Annee, mois_nom as Mois, nb as `Nombre de demandes` FROM
+      (SELECT DATE_FORMAT(tkt_date_demande,'%Y') as Annee,
+        DATE_FORMAT(tkt_date_demande,'%m') as id_mois,
+        count(*) as nb
+        FROM Ticket
+        GROUP BY DATE_FORMAT(tkt_date_demande,'%Y'), DATE_FORMAT(tkt_date_demande,'%m')
+      ) AS t
+      JOIN LibelleMois m ON m.mois_id = t.id_mois",
     // moyenne du temps de résoluttion par importance
-    'par_impact' => 'SELECT imp_nom as `importance (impact)`,
+    'par_impact' => 'SELECT imp_nom as `Importance (impact)`,
     avg(tkt_temps_passe) as `Temps passé moyen en minutes`
     FROM TicketAll WHERE tkt_etat=2 GROUP BY imp_nom',
     // nombre de demandes par importance
-		'nb_impact'  => 'SELECT imp_nom as `importance (impact)`, count(*) as `Nombre de demandes` FROM TicketAll GROUP BY imp_nom'
+		'nb_impact'  => 'SELECT imp_nom as `Importance (impact)`, count(*) as `Nombre de demandes` FROM TicketAll GROUP BY imp_nom'
   ];
 
   /**

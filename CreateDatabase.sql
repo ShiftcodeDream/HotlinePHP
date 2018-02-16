@@ -49,6 +49,16 @@ CREATE TABLE LibelleImpact(
 INSERT INTO LibelleImpact VALUES
   (1, 'Aucun'), (2,'Faible'), (3, 'Moyen'), (4,'élevé'), (5,'Critique');
 
+/* Table des mois */
+CREATE TABLE LibelleMois(
+  mois_id INT PRIMARY KEY,
+  mois_nom VARCHAR(10)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO LibelleMois VALUES
+(1,'Janvier'), (2,'Février'), (3,'Mars'), (4,'Avril'), (5,'Mai'), (6,'Juin'),
+(7,'Juillet'), (8,'Août'), (9,'Septembre'), (10,'Octobre'), (11,'Novembre'), (12,'Décembre');
+
 /* Vue avec noms des acteurs en clair */
 CREATE VIEW TicketAll AS
 SELECT t.*,
