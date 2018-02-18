@@ -48,14 +48,18 @@ function listeParMois(){
  * par importance
  **/
 function listeParImpact(){
+   $l = Stats::getList('par_urgence');
+   afficheStatistiqueSimples($l, "Moyenne du temps de résolution par urgence", false);  
    $l = Stats::getList('par_impact');
-   afficheStatistiqueSimples($l, "Moyenne du temps de résolution par importance");  
+   afficheStatistiqueSimples($l, "Moyenne du temps de résolution par importance", true);  
 }
 
 /**
  * Affiche les statistiques sur le nombre de demandes par importance
  **/
 function listeNbParImpact(){
+   $l = Stats::getList('nb_urgence');
+   afficheStatistiqueSimples($l, "Nombre de demandes par urgence", false);  
    $l = Stats::getList('nb_impact');
-   afficheStatistiqueSimples($l, "Nombre de demandes par importance");  
+   afficheStatistiqueSimples($l, "Nombre de demandes par importance", true);  
 }

@@ -42,7 +42,7 @@ body{
   width:100%;
 }
 h1{
-  margin-top:0;
+  margin-top:0px;
 }
 /* Menu du site */
 nav{
@@ -127,6 +127,7 @@ input[type=submit], input[type=button]{
 }
 table{
   margin-top:15px;
+	margin-bottom:30px;
 }
 table.liste{
   border-collapse: collapse;  

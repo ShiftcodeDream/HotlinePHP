@@ -4,9 +4,12 @@
  * Affiche une liste de résultats à un seul niveau
  * $liste array tableau d'enregistrements à afficher
  * $titre string Titre à afficher
+ * $lastStat boolean indique s'il s'agit de la dernière statistique de la page
  */
-function afficheStatistiqueSimples($liste, $titre){
-  include "view/header.php";
+function afficheStatistiqueSimples($liste, $titre, $lastStat = true){
+	global $headersOK;
+	// Permet d'afficher plusieurs tableaux de statistiques sur la même page
+ 	include_once "view/header.php";
 
   echo "<h1>$titre</h1>";
   if(empty($liste)){
@@ -31,6 +34,8 @@ function afficheStatistiqueSimples($liste, $titre){
   }
   echo "</tbody></table>";
   
-  include "view/footer.php";
+	if($lastStat){
+		include "view/footer.php";
+	}
 }
 ?>

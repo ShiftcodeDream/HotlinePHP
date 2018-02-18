@@ -21,12 +21,18 @@ class Stats{
         GROUP BY DATE_FORMAT(tkt_date_demande,'%Y'), DATE_FORMAT(tkt_date_demande,'%m')
       ) AS t
       JOIN LibelleMois m ON m.mois_id = t.id_mois",
-    // moyenne du temps de résoluttion par importance
+    // moyenne du temps de résoluttion par impact
     'par_impact' => 'SELECT imp_nom as `Importance (impact)`,
-    avg(tkt_temps_passe) as `Temps passé moyen en minutes`
+    round(avg(tkt_temps_passe)) as `Temps passé moyen en minutes`
     FROM TicketAll WHERE tkt_etat=2 GROUP BY imp_nom',
-    // nombre de demandes par importance
-		'nb_impact'  => 'SELECT imp_nom as `Importance (impact)`, count(*) as `Nombre de demandes` FROM TicketAll GROUP BY imp_nom'
+    // moyenne du temps de résoluttion par urgence
+    'par_urgence' => 'SELECT urg_nom as `Importance (urgence)`,
+    round(avg(tkt_temps_passe)) as `Temps passé moyen en minutes`
+    FROM TicketAll WHERE tkt_etat=2 GROUP BY urg_nom',
+    // nombre de demandes par impact
+		'nb_impact'  => 'SELECT imp_nom as `Importance (impact)`, count(*) as `Nombre de demandes` FROM TicketAll GROUP BY imp_nom',
+    // nombre de demandes par urgence
+		'nb_urgence'  => 'SELECT urg_nom as `Importance (urgence)`, count(*) as `Nombre de demandes` FROM TicketAll GROUP BY urg_nom'
   ];
 
   /**
