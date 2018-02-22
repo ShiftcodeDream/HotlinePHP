@@ -23,7 +23,7 @@ body{
 }
 /* Pour mettre en évidence un champ en erreur */
 .fielderror{
-  background-color: #efb8a0;
+  background-color: lightPink;
 }
 .loginform{
   position: absolute;

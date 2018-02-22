@@ -35,6 +35,11 @@ if(!isset($FrameworkOK)){
         <li><a href="index.php?c=stats&v=par_impact">Résolution par importance</a></li>
         <li><a href="index.php?c=stats&v=nb_impact">Demandes par importance</a></li>
       </ul>
+			<h3>Administration</h3>
+			<ul>
+				<li><a href="index.php?c=user&a=list">Liste des utilisateurs</a></li>
+				<li><a href="index.php?c=user&a=new">Ajouter un utilisateur</a></li>
+			</ul>
     <?php } ?>
       <h3>Divers</h3>
       <ul>
