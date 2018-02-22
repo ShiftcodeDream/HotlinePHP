@@ -11,7 +11,7 @@ if(!isset($FrameworkOK)){
   </head>
   <script>
     function about(){
-      alert("Application de gestion d'incidents\n\nAuteurs :\n  - Nawal\n  - Adrien\n  - Matthias");
+      alert("Application de gestion d'incidents\n\nAuteurs :\n  - Nawal Sehaki\n  - Adrien Dauvilaire\n  - Matthias Delamare");
     }
   </script>
   <body>
