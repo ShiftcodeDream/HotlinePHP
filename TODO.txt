@@ -1,6 +1,0 @@
-FAIT controller/UserAuthentificationController.php
-controller/TicketController.php
-controller/UserController.php
-style.css
-
-Sur tous les fichiers sauf /index.php, tester la présence du framework (cf utils/misc.php), sinon renvoyer à l'accueil.

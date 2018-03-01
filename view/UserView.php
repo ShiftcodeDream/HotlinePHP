@@ -42,4 +42,26 @@ function afficheformulaire($nom='', $prenom='', $login='', $mdp='', $role=''){
     include "view/footer.php";
 
 }
+
+function afficherlisteUtilisateur ($liste){
+	include "view/header.php";
+	echo "<h1>Liste des utilisateurs</h1>";
+echo '<table class="liste">';
+echo "<thead><tr><th>Nom</th><th>Prénom</th><th>Role</th></tr></thead>";
+
+ foreach($liste as $donnee){
+   
+?>
+    <tr>
+      <td><?= $donnee['usr_nom'] ?></td>
+      <td><?= $donnee['usr_prenom'] ?></td>
+      <td><?= $donnee['usr_role'] ?></td>
+      
+  
+    </tr>
+<?php
+  }
+echo '</table>';
+include "view/footer.php";
+}
 ?>

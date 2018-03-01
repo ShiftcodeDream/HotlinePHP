@@ -1,7 +1,9 @@
 <?php
 include "model/UserAuthentificationModel.php";
-$action = getValue('a');
 include "view/UserView.php";
+include "model/ListerUtilisateur.php";
+
+$action = getValue('a');
 switch($action){
   case 'new' :
     formNewUser();
@@ -10,7 +12,7 @@ switch($action){
     enregistrerUtilisateur();
     break;
 	case 'list' :
-		listerUtilisateurs();
+		controleurlisterUtilisateur();
 		break;
   default :
     header("Location: index.php");
@@ -21,14 +23,15 @@ function formNewUser(){
     
 }
 
-function listerUtilisateurs(){
-	// TODO Pour Nawal
+function controleurlisterUtilisateur(){
   global $erreurs, $champsErreur,$messages;
-	
-	include "view/header.php";
-	Echo("<h1>(ligne à supprimer) A faire par Nawal</h1>");
+	/*include("utils/db.php");*/
+ $liste= ListerUtilisateur();
+  afficherlisteUtilisateur ($liste);
+	/*include "model/ListerUtilisateur.php";*/
 	include "view/footer.php";
 }
+
 
 function enregistrerUtilisateur(){
   global $erreurs, $champsErreur,$messages;
@@ -60,7 +63,7 @@ function enregistrerUtilisateur(){
     if (empty($erreurs)){
         if (createUser($nom, $prenom, $login, $mdp, $role)){
             $messages[] = "L'utilisateur $prenom $nom a été créé";
-            listerUtilisateurs();
+            controleurlisterUtilisateur();
         }
         else
         {
