@@ -218,27 +218,27 @@ function afficheListeTicketsUtilisateur($liste){
   $action = 'index.php?c=ticket&a=visu&id=';
   
   include "view/header.php";
-  echo "<h1>Liste de vos demandes</h1>\n";
+  echo "<h1>Liste des demandes de " . getSessionValue('user_name') . "</h1>\n";
 
   if(empty($liste)){
-  echo "<h1>Liste des demandes de " . getSessionValue('user_name') . "</h1>\n";
-    return;
-  }
+    echo "Aucun élément pour le moment";
+  }else{
 	
-  enteteTableau(array('Titre', 'Urgence', 'Etat', 'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
-  
-  foreach($liste as $donnee){
-    $uri = $action . $donnee['tkt_id'];
+      enteteTableau(array('Titre', 'Urgence', 'Etat', 'Date de la demande', 'Date de sa prise en charge', 'Date de résolution'));
+
+      foreach($liste as $donnee){
+        $uri = $action . $donnee['tkt_id'];
 ?>
-    <tr onclick="document.location='<?=$uri?>'">
-      <td><?= $donnee['tkt_titre'] ?></td>
-      <td><?= $donnee['urg_nom'] ?></td>
-			<td><?= $donnee['etat_nom'] ?></td>
-      <td><?= formateDateHeure($donnee['tkt_date_demande']) ?></td>
-      <td><?= formateDateHeure($donnee['tkt_date_pec']) ?></td>
-      <td><?= formateDateHeure($donnee['tkt_date_solution']) ?></td>
-    </tr>
+        <tr onclick="document.location='<?=$uri?>'">
+          <td><?= $donnee['tkt_titre'] ?></td>
+          <td><?= $donnee['urg_nom'] ?></td>
+                <td><?= $donnee['etat_nom'] ?></td>
+          <td><?= formateDateHeure($donnee['tkt_date_demande']) ?></td>
+          <td><?= formateDateHeure($donnee['tkt_date_pec']) ?></td>
+          <td><?= formateDateHeure($donnee['tkt_date_solution']) ?></td>
+        </tr>
 <?php
+      }
   }
   echo "</tbody></table>";
   include "view/footer.php";	

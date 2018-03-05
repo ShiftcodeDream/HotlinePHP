@@ -58,7 +58,6 @@ switch($action){
   case 'vuser' : 
   default :
     listeTicketsUtilisateur();
-    exit;
 }
 
 /**
