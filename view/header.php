@@ -34,6 +34,7 @@ if(!isset($FrameworkOK)){
         <li><a href="index.php?c=stats&v=par_mois">Demandes par mois</a></li>
         <li><a href="index.php?c=stats&v=par_impact">Résolution par importance</a></li>
         <li><a href="index.php?c=stats&v=nb_impact">Demandes par importance</a></li>
+        <li><a href="index.php?c=stats&v=activ_tech">Activité par technicien</a></li>
       </ul>
 			<h3>Administration</h3>
 			<ul>

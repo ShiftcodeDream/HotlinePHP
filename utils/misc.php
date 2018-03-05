@@ -24,7 +24,7 @@ function getLibelleRole(){
     case 'user' :
       return 'utilisateur';
     default :
-      return '';
+      return 'utilisateur';
   }
 }
 

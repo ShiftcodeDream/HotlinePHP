@@ -23,6 +23,9 @@ switch($vue){
   case 'nb_impact' :
     listeNbParImpact();
     break;
+  case 'activ_tech' :
+    listeActiviteTech();
+    break;
   default :
     header('Location: index.php');
 }
@@ -62,4 +65,12 @@ function listeNbParImpact(){
    afficheStatistiqueSimples($l, "Nombre de demandes par urgence", false);  
    $l = Stats::getList('nb_impact');
    afficheStatistiqueSimples($l, "Nombre de demandes par importance", true);  
+}
+
+/**
+ * Affiche les statistiques sur l'activité des techniciens
+ **/
+function listeActiviteTech(){
+    $l = Stats::getList('activ_tech');
+   afficheStatistiqueSimples($l, "Activité par technicien, par mois");      
 }
