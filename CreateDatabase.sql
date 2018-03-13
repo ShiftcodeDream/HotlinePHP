@@ -77,7 +77,7 @@ SELECT *, DATE_FORMAT(tkt_date_demande,'%Y') as Annee, mois_nom as mois
 FROM TicketAll
 JOIN LibelleMois ON mois_id = DATE_FORMAT(tkt_date_demande,'%m');
 
-INSERT INTO `utilisateur` (`usr_id`, `usr_nom`, `usr_prenom`, `usr_login`, `usr_passwd`, `usr_role`) VALUES
+INSERT INTO `Utilisateur` (`usr_id`, `usr_nom`, `usr_prenom`, `usr_login`, `usr_passwd`, `usr_role`) VALUES
 (1, 'La Malice', 'Denis', 'denis', 'ni deux', 'tech'),
 (2, 'Lecomte', 'Albert', 'albert', 'bertal', 'util'),
 (3, 'Guilbert', 'Yann', 'yann', 'nnya', 'util'),
@@ -85,7 +85,7 @@ INSERT INTO `utilisateur` (`usr_id`, `usr_nom`, `usr_prenom`, `usr_login`, `usr_
 (5, 'Pruneau', 'Gilles', 'gilles', 'lesgil', 'tech'),
 (6, 'Gubri', 'Christophe', 'christophe', 'tophechris', 'tech');
 
-INSERT INTO `ticket` (`tkt_id`, `tkt_titre`, `tkt_description`, `tkt_solution`, `tkt_urgence`, `tkt_impact`, `tkt_demandeur`, `tkt_technicien`, `tkt_etat`, `tkt_temps_passe`, `tkt_date_demande`, `tkt_date_pec`, `tkt_date_solution`) VALUES
+INSERT INTO `Ticket` (`tkt_id`, `tkt_titre`, `tkt_description`, `tkt_solution`, `tkt_urgence`, `tkt_impact`, `tkt_demandeur`, `tkt_technicien`, `tkt_etat`, `tkt_temps_passe`, `tkt_date_demande`, `tkt_date_pec`, `tkt_date_solution`) VALUES
 (1, 'Probl&egrave;me de bandoth&egrave;que', 'La bandoth&egrave;que ne fonctionne plus, impossible de sortir la bande...', 'La pi&egrave;ce a &eacute;t&eacute; remplac&eacute;e par un technicien sp&eacute;cialis&eacute;.', 2, 4, 3, 6, 2, 120, '2018-03-05 19:51:35', '2018-02-05 20:37:12', '2018-03-05 20:37:56'),
 (2, 'Demande d''achat bloqu&eacute;e', 'Cette DA est bloqu&eacute;e chez Christian :\r\n\r\n&quot;Je ne peux pas valider cette DA car le montant n''est pas inscrit en Euro.\r\n\r\nVoir message ci-dessous:\r\nLa somme des prix unitaires des lignes est sup&eacute;rieure au seuil autoris&eacute;! (10000 &euro;). Veuillez effectuer une demande d''autorisation en cliquant sur le bouton ''Demande accord DG''\r\n\r\nMerci de faire le n&eacute;cessaire pour que je puisse valider.&quot;\r\n\r\nCette DA est de 300 000 yen soit 2622&euro; &lt; 10 000&euro;. Pouvez-vo', 'Le syst&egrave;me choisit l''euro comme devise par d&eacute;faut. N''ayant pas pr&eacute;cis&eacute; la devise utilis&eacute;e dans votre DA, vous comprenez ais&eacute;ment pourquoi cette derni&egrave;re a &eacute;t&eacute; bloqu&eacute;e pour approbation.', 3, 1, 3, 1, 2, 1, '2018-02-05 20:20:23', '2018-03-05 20:58:15', '2018-03-05 21:01:53'),
 (3, 'T&eacute;l&eacute;phone au Japon', 'Puis-je utiliser mon smartphone au Japon ? si oui quelles fonctions ? telephone ? messagerie ?', 'Oui, il faut juste activer l''option internationale sur le forfait. Nous avons vu avec votre chef de service, il nous a donn&eacute; l''accord pour activer cette option pour deux mois.', 2, 1, 4, 5, 2, 23, '2018-03-05 20:21:49', '2018-03-05 20:28:40', '2018-03-05 20:32:29'),

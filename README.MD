@@ -4,6 +4,17 @@ Développé par la Dream Team :
 - Adrien Dauvilaire
 - Matthias Delamare
 
+## Prérequis
+### Base de données
+Le logiciel requiert un moteur de base de données de type Mysql version 5 minimum.
+
+### PHP
+Ce logiciel requiert PHP 5.6 au minmumu. Son fonctionnement n'est pas garanti en deçà de cette version.
+Le fonctionnement n'est pas garanti avec la version 7 de PHP
+
+### Serveur web
+Le logiciel est compatible avec les serveurs Apache et Nginx. IIS n'est pas supporté par l'application.
+
 ## Installation
 Depuis phpMyAdmin, exécuter le script CreateDatabase.sql
 Dans le dossier config, renommer le fichier credential-model.php en credential.php
